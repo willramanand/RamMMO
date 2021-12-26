@@ -1,5 +1,6 @@
 com\gmail\willramanand\RamMMO\listeners\PlayerListener.class
 com\gmail\willramanand\RamMMO\commands\CommandManager.class
+com\gmail\willramanand\RamMMO\commands\HelpCommand.class
 com\gmail\willramanand\RamMMO\commands\SubCommand.class
 com\gmail\willramanand\RamMMO\utils\Formatter.class
 com\gmail\willramanand\RamMMO\commands\BossCommand.class
@@ -15,6 +16,7 @@ com\gmail\willramanand\RamMMO\RamMMO.class
 com\gmail\willramanand\RamMMO\mobs\MobConverter.class
 com\gmail\willramanand\RamMMO\commands\AgilityCommand.class
 com\gmail\willramanand\RamMMO\boss\WolfBoss$1.class
+com\gmail\willramanand\RamMMO\boss\WolfBoss$2.class
 com\gmail\willramanand\RamMMO\boss\WolfMinion.class
 com\gmail\willramanand\RamMMO\utils\EffectChecker.class
 com\gmail\willramanand\RamMMO\commands\FishingCommand.class

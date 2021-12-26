@@ -12,3 +12,5 @@ commands:
 permissions:
   rammmo.mmo:
     default: true
+  rammmo.mmo.boss:
+    default: op
