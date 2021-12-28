@@ -6,7 +6,7 @@
 
     <groupId>com.gmail.willramanand</groupId>
     <artifactId>RamMMO</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.4</version>
     <name>RamMMO</name>
     <description>This plugin adds MMO elements to your Spigot server.</description>
 
@@ -44,6 +44,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>essentials-releases</id>
+            <url>https://repo.essentialsx.net/releases/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -57,6 +61,17 @@
             <groupId>com.github.Archy-X</groupId>
             <artifactId>AureliumSkills</artifactId>
             <version>Beta1.2.7</version>
+        </dependency>
+        <dependency>
+            <groupId>net.essentialsx</groupId>
+            <artifactId>EssentialsX</artifactId>
+            <version>2.19.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>2.2.1</version>
         </dependency>
     </dependencies>
 

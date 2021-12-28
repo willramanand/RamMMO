@@ -1,10 +1,11 @@
 name: RamMMO
-version: 1.2.2
+version: 1.2.4
 description: This plugin adds MMO elements to your Spigot server.
 author: ${project.author}
 api-version: '1.18'
 main: com.gmail.willramanand.RamMMO.RamMMO
 depend: [AureliumSkills]
+softdepend: [Essentials]
 commands:
   mmo:
     description: Base command for RamMMO.

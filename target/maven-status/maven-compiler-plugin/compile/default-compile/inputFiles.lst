@@ -2,6 +2,7 @@ C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\c
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\commands\MobsCommand.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\utils\ColorUtils.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\commands\ExcavationCommand.java
+C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\utils\ConfigManager.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\commands\BossCommand.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\commands\HelpCommand.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\mobs\MobConverter.java
@@ -15,6 +16,7 @@ C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\c
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\listeners\HealthListener.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\utils\EffectChecker.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\commands\FishingCommand.java
+C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\MMOPlayer.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\RamMMO.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\utils\Formatter.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\listeners\PlayerListener.java

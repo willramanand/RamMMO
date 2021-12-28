@@ -8,26 +8,23 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Wolf;
 
 public class WolfMinion {
-  private RamMMO plugin;
-  private Wolf minWolf;
+    private RamMMO plugin;
+    private Wolf minWolf;
 
-  public WolfMinion(RamMMO plugin, Location loc, int counter, LivingEntity livingEntity) {
-    this.plugin = plugin;
-    this.minWolf =
-        loc.getBlock()
-            .getWorld()
-            .spawn(loc.getBlock().getLocation().add(counter, 0.5, counter), Wolf.class);
+    public WolfMinion(RamMMO plugin, Location loc, int counter, LivingEntity livingEntity) {
+        this.plugin = plugin;
+        this.minWolf = loc.getBlock().getWorld().spawn(loc.getBlock().getLocation().add(counter, 0.5, counter), Wolf.class);
 
-    this.minWolf.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(50);
-    this.minWolf.setHealth(50.0);
+        this.minWolf.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(50);
+        this.minWolf.setHealth(50.0);
 
-    this.minWolf.setAngry(true);
+        this.minWolf.setAngry(true);
 
-    this.minWolf.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(4);
-    this.minWolf.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(25);
-    minWolf.setTarget(livingEntity);
+        this.minWolf.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(4);
+        this.minWolf.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(25);
+        minWolf.setTarget(livingEntity);
 
-    this.minWolf.setCustomName(ColorUtils.colorMessage("&bBeta Wolf"));
-    this.minWolf.setCustomNameVisible(true);
-  }
+        this.minWolf.setCustomName(ColorUtils.colorMessage("&bBeta Wolf"));
+        this.minWolf.setCustomNameVisible(true);
+    }
 }

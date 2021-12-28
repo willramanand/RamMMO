@@ -13,55 +13,55 @@ import java.util.List;
 @CommandPermission("rammmo.mmo.boss")
 public class BossCommand extends SubCommand {
 
-  private RamMMO plugin;
+    private RamMMO plugin;
 
-  public BossCommand(RamMMO plugin) {
-    this.plugin = plugin;
-  }
-
-  @Override
-  public void onCommand(Player player, String[] args) {
-    if (player == null) {
-      return;
+    public BossCommand(RamMMO plugin) {
+        this.plugin = plugin;
     }
 
-    Location loc = player.getLocation();
-
-    try {
-      if (args.length == 2) {
-        if (args[1].equalsIgnoreCase("wolf")) {
-          new WolfBoss(plugin, loc);
-        } else {
-          player.sendMessage("§4Valid agility arguments: wolf");
+    @Override
+    public void onCommand(Player player, String[] args) {
+        if (player == null) {
+            return;
         }
-      } else {
-        player.sendMessage("§e/mmo §d<boss> §a<type>");
-      }
-    } catch (IllegalArgumentException e) {
-      player.sendMessage(ChatColor.DARK_RED + "Not valid argument!");
+
+        Location loc = player.getLocation();
+
+        try {
+            if (args.length == 2) {
+                if (args[1].equalsIgnoreCase("wolf")) {
+                    new WolfBoss(plugin, loc);
+                } else {
+                    player.sendMessage("§4Valid agility arguments: wolf");
+                }
+            } else {
+                player.sendMessage("§e/mmo §d<boss> §a<type>");
+            }
+        } catch (IllegalArgumentException e) {
+            player.sendMessage(ChatColor.DARK_RED + "Not valid argument!");
+        }
     }
-  }
 
-  @Override
-  public String name() {
-    return plugin.getCommandManager().boss;
-  }
+    @Override
+    public String name() {
+        return plugin.getCommandManager().boss;
+    }
 
-  @Override
-  public String info() {
-    return "Allows the spawning of boss creatures by Admins";
-  }
+    @Override
+    public String info() {
+        return "Allows the spawning of boss creatures by Admins";
+    }
 
-  @Override
-  public String[] aliases() {
-    return new String[0];
-  }
+    @Override
+    public String[] aliases() {
+        return new String[0];
+    }
 
-  @Override
-  public List<String> getSubCommandArguments() {
-    List<String> args = new ArrayList<>();
+    @Override
+    public List<String> getSubCommandArguments() {
+        List<String> args = new ArrayList<>();
 
-    args.add("wolf");
-    return args;
-  }
+        args.add("wolf");
+        return args;
+    }
 }
