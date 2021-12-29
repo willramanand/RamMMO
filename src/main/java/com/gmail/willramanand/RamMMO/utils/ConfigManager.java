@@ -1,8 +1,8 @@
 package com.gmail.willramanand.RamMMO.utils;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.passives.Passive;
-import com.gmail.willramanand.RamMMO.passives.Passives;
+import com.gmail.willramanand.RamMMO.enums.Passive;
+import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;

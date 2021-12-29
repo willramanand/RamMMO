@@ -9,9 +9,8 @@ softdepend: [Essentials]
 commands:
   mmo:
     description: Base command for RamMMO.
-    permission: rammmo.mmo
 permissions:
   rammmo.mmo:
     default: true
-  rammmo.mmo.boss:
+  rammmo.boss:
     default: op

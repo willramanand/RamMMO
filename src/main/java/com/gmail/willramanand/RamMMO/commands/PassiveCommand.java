@@ -1,10 +1,11 @@
 package com.gmail.willramanand.RamMMO.commands;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.passives.Passive;
-import com.gmail.willramanand.RamMMO.passives.Passives;
+import com.gmail.willramanand.RamMMO.enums.Commands;
+import com.gmail.willramanand.RamMMO.enums.Passive;
+import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
-import org.bukkit.ChatColor;
+import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class PassiveCommand extends SubCommand {
                     } else if (args[2].equalsIgnoreCase("jump_boost")) {
                         passive = Passives.AGILITY_JUMP_BOOST;
                     } else {
-                        player.sendMessage("§4Valid agility arguments: speed, jump_boost");
+                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: speed, jump_boost"));
                     }
 
                 } else if (args[1].equalsIgnoreCase("fishing")) {
@@ -47,7 +48,7 @@ public class PassiveCommand extends SubCommand {
                     } else if (args[2].equalsIgnoreCase("conduit_power")) {
                         passive = Passives.FISHING_CONDUIT_POWER;
                     } else {
-                        player.sendMessage("§4Valid agility arguments: dolphins_grace, conduit_power");
+                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: dolphins_grace, conduit_power"));
                     }
 
                 } else if (args[1].equalsIgnoreCase("excavation")) {
@@ -55,7 +56,7 @@ public class PassiveCommand extends SubCommand {
                     if (args[2].equalsIgnoreCase("haste")) {
                         passive = Passives.EXCAVATION_HASTE;
                     } else {
-                        player.sendMessage("§4Valid agility arguments: haste");
+                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: haste"));
                     }
 
                 } else if (args[1].equalsIgnoreCase("foraging")) {
@@ -63,7 +64,7 @@ public class PassiveCommand extends SubCommand {
                     if (args[2].equalsIgnoreCase("haste")) {
                         passive = Passives.FORAGING_HASTE;
                     } else {
-                        player.sendMessage("§4Valid agility arguments: haste");
+                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: haste"));
                     }
 
                 } else if (args[1].equalsIgnoreCase("mining")) {
@@ -71,31 +72,31 @@ public class PassiveCommand extends SubCommand {
                     if (args[2].equalsIgnoreCase("haste")) {
                         passive = Passives.MINING_HASTE;
                     } else {
-                        player.sendMessage("§4Valid agility arguments: haste");
+                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: haste"));
                     }
 
                 }
 
             } catch (IllegalArgumentException e) {
-                player.sendMessage(ChatColor.DARK_RED + "Not valid argument!");
+                player.sendMessage(ColorUtils.colorMessage("&4Not valid argument!"));
             }
             if (passive != null) {
                 if (mmoPlayer.getPassives(passive)) {
                     mmoPlayer.setPassives(passive, false);
-                    player.sendMessage("§d" + passive.name().toLowerCase() + " §ehas been §cdisabled");
+                    player.sendMessage(ColorUtils.colorMessage("&d" + passive.getPassive() + " &efor &d" + passive.getSkill() + " &ehas been §cdisabled"));
                 } else {
                     mmoPlayer.setPassives(passive, true);
-                    player.sendMessage("§d" + passive.name().toLowerCase() + " §ehas been §aenabled");
+                    player.sendMessage(ColorUtils.colorMessage("&d" + passive.getPassive() + " &efor &d" + passive.getSkill() + " &ehas been §aenabled"));
                 }
             }
         } else {
-            player.sendMessage("§e/mmo passive §d<skill> §a<effect>");
+            player.sendMessage(ColorUtils.colorMessage("&b/mmo passive &d<skill> §a<effect>"));
         }
     }
 
     @Override
     public String name() {
-        return plugin.getCommandManager().passive;
+        return Commands.PASSIVE.getName();
     }
 
     @Override

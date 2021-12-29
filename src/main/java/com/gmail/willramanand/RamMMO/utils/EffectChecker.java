@@ -3,7 +3,7 @@ package com.gmail.willramanand.RamMMO.utils;
 import com.archyx.aureliumskills.api.AureliumAPI;
 import com.archyx.aureliumskills.skills.Skills;
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.passives.Passives;
+import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,11 +21,13 @@ public class EffectChecker {
 
     public void checkPassives(Player player) {
         this.mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
-        checkForaging(mmoPlayer);
-        checkExcavation(mmoPlayer);
-        checkAgility(mmoPlayer);
-        checkFishing(mmoPlayer);
-        checkMining(mmoPlayer);
+        if (mmoPlayer != null) {
+            checkForaging(mmoPlayer);
+            checkExcavation(mmoPlayer);
+            checkAgility(mmoPlayer);
+            checkFishing(mmoPlayer);
+            checkMining(mmoPlayer);
+        }
     }
 
     private void checkFishing(MMOPlayer mmoPlayer) {

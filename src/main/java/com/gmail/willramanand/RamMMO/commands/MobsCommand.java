@@ -1,6 +1,7 @@
 package com.gmail.willramanand.RamMMO.commands;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.enums.Commands;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import org.bukkit.entity.Player;
 
@@ -28,7 +29,7 @@ public class MobsCommand extends SubCommand {
 
     @Override
     public String name() {
-        return plugin.getCommandManager().mobs;
+        return Commands.MOBS.getName();
     }
 
     @Override

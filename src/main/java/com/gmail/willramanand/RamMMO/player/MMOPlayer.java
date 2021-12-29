@@ -1,7 +1,7 @@
 package com.gmail.willramanand.RamMMO.player;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.passives.Passive;
+import com.gmail.willramanand.RamMMO.enums.Passive;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class MMOPlayer {
     private final Player player;
     private final UUID uuid;
 
-    private Map<Passive, Boolean> passives;
+    private final Map<Passive, Boolean> passives;
 
     private boolean saving;
     private boolean shouldSave;

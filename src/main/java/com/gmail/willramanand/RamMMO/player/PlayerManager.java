@@ -59,7 +59,6 @@ public class PlayerManager {
                         plugin.getConfigManager().save(mmoPlayer.getPlayer(), false);
                     }
                 }
-                plugin.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&2Auto save complete!"));
             }
         }.runTaskTimer(plugin, 6000L, 6000L);
     }

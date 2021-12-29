@@ -1,8 +1,8 @@
 package com.gmail.willramanand.RamMMO.commands;
 
-import com.archyx.aureliumskills.acf.annotation.CommandPermission;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.boss.WolfBoss;
+import com.gmail.willramanand.RamMMO.enums.Commands;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-@CommandPermission("rammmo.mmo.boss")
 public class BossCommand extends SubCommand {
 
     private final RamMMO plugin;
@@ -25,26 +24,30 @@ public class BossCommand extends SubCommand {
             return;
         }
 
-        Location loc = player.getLocation();
+        if (player.hasPermission("rammmo.boss")) {
+            Location loc = player.getLocation();
 
-        try {
-            if (args.length == 2) {
-                if (args[1].equalsIgnoreCase("wolf")) {
-                    new WolfBoss(plugin, loc);
+            try {
+                if (args.length == 2) {
+                    if (args[1].equalsIgnoreCase("wolf")) {
+                        new WolfBoss(plugin, loc);
+                    } else {
+                        player.sendMessage("§4Valid agility arguments: wolf");
+                    }
                 } else {
-                    player.sendMessage("§4Valid agility arguments: wolf");
+                    player.sendMessage("§e/mmo §d<boss> §a<type>");
                 }
-            } else {
-                player.sendMessage("§e/mmo §d<boss> §a<type>");
+            } catch (IllegalArgumentException e) {
+                player.sendMessage(ChatColor.DARK_RED + "Not valid argument!");
             }
-        } catch (IllegalArgumentException e) {
-            player.sendMessage(ChatColor.DARK_RED + "Not valid argument!");
+        } else {
+            player.sendMessage(ChatColor.DARK_RED + "You do not have that permission!");
         }
     }
 
     @Override
     public String name() {
-        return plugin.getCommandManager().boss;
+        return Commands.BOSS.getName();
     }
 
     @Override

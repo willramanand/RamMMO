@@ -1,6 +1,7 @@
 package com.gmail.willramanand.RamMMO.commands;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.enums.Commands;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import org.bukkit.entity.Player;
 
@@ -19,16 +20,24 @@ public class HelpCommand extends SubCommand {
     public void onCommand(Player player, String[] args) {
 
         List<SubCommand> commands = plugin.getCommandManager().getCommandList();
-        String prefix = plugin.getCommandManager().main;
+        String prefix = Commands.MAIN.getName();
 
-        player.sendMessage(ColorUtils.colorMessage("&e---- &d" + plugin.getName() + " Help &e----"));
+        player.sendMessage(ColorUtils.colorMessage("&6---- &b" + plugin.getName() + " Help &6----"));
 
-        commands.forEach(command -> player.sendMessage(ColorUtils.colorMessage("&d/" + prefix + " &a" + command.name() + "&e: " + command.info())));
+        commands.forEach(command ->{
+                String commandAlias = command.name();
+                for (String alias: command.aliases()) {
+                    if (command.aliases() != null) {
+                        commandAlias += "," + alias;
+                    }
+                }
+                player.sendMessage(ColorUtils.colorMessage("&b/" + prefix + " " + commandAlias + " &e" + command.info()));
+        });
     }
 
     @Override
     public String name() {
-        return plugin.getCommandManager().help;
+        return Commands.HELP.getName();
     }
 
     @Override
@@ -38,7 +47,9 @@ public class HelpCommand extends SubCommand {
 
     @Override
     public List<String> aliases() {
-        return new ArrayList<>();
+        List<String> alias = new ArrayList<>();
+        alias.add("h");
+        return alias;
     }
 
     @Override

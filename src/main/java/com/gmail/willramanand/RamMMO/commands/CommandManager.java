@@ -1,6 +1,8 @@
 package com.gmail.willramanand.RamMMO.commands;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.enums.Commands;
+import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -22,17 +24,12 @@ public class CommandManager implements TabExecutor {
         this.plugin = plugin;
     }
 
-    public String main = "mmo";
-    public String boss = "boss";
-    public String mobs = "mobs";
-    public String help = "help";
-    public String passive = "passive";
-
     public void setup() {
-        plugin.getCommand(main).setExecutor(this);
+        plugin.getCommand(Commands.MAIN.getName()).setExecutor(this);
 
         this.commands.add(new MobsCommand(plugin));
         this.commands.add(new HelpCommand(plugin));
+        this.commands.add(new VersionCommand(plugin));
         this.commands.add(new PassiveCommand(plugin));
         //this.commands.add(new BossCommand(plugin)); // WIP
     }
@@ -46,16 +43,16 @@ public class CommandManager implements TabExecutor {
 
         Player player = (Player) sender;
 
-        if (command.getName().equalsIgnoreCase(main)) {
+        if (command.getName().equalsIgnoreCase(Commands.MAIN.getName())) {
             if (args.length == 0) {
-                player.sendMessage("§ePlease add arguments to your command. Type §d/mmo help §e for info.");
+                player.sendMessage(ColorUtils.colorMessage("&ePlease add arguments to your command. Type &d/mmo help &e for info."));
                 return true;
             }
 
             SubCommand target = this.get(args[0]);
 
             if (target == null) {
-                player.sendMessage("§eInvalid subcommand. Type §d/mmo help §e for info.");
+                player.sendMessage(ColorUtils.colorMessage("&eInvalid subcommand. Type &d/mmo help &e for info."));
                 return true;
             }
 
@@ -106,9 +103,6 @@ public class CommandManager implements TabExecutor {
                 SubCommand subCommand = sc.next();
                 primary.add(subCommand.name());
 
-                for (String alias : subCommand.aliases()) {
-                    primary.add(alias);
-                }
             }
             return primary;
         }

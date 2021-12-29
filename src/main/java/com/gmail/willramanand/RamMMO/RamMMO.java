@@ -34,11 +34,12 @@ public class RamMMO extends JavaPlugin {
     public void onEnable() {
         // Dependencies
         if (!AureliumAPI.getPlugin().isEnabled()) {
+            log.info(ColorUtils.colorMessage("[" + this.getName() + "] &4AureliumSkills not detected! Disabling..."));
             getServer().getPluginManager().disablePlugin(this);
         }
 
         if (isEssActive()) {
-            log.info(ColorUtils.colorMessage("&2Enabling EssentialsX integration."));
+            log.info(ColorUtils.colorMessage("[" + this.getName() + "] &2Enabling EssentialsX integration."));
             setupEconomy();
         }
 
