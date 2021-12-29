@@ -6,15 +6,18 @@ import com.gmail.willramanand.RamMMO.enums.Passive;
 import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PassiveCommand extends SubCommand {
 
     private final RamMMO plugin;
-    private List<String> secondArgs;
 
     public PassiveCommand(RamMMO plugin) {
         this.plugin = plugin;
@@ -88,9 +91,31 @@ public class PassiveCommand extends SubCommand {
                     mmoPlayer.setPassives(passive, true);
                     player.sendMessage(ColorUtils.colorMessage("&d" + passive.getPassive() + " &efor &d" + passive.getSkill() + " &ehas been §aenabled"));
                 }
+                player.performCommand("mmo passive");
             }
+        } else if (args.length == 1) {
+                player.sendMessage(ColorUtils.colorMessage("&6---- &bPassives &6----"));
+                Map<Passive, TextComponent> passiveOptions = new HashMap<>();
+                for (Passive pass : Passives.values()) {
+                    TextComponent toggle = new TextComponent();
+                    if (mmoPlayer.getPassives(pass)) {
+                        toggle.setText("[Enabled]");
+                        toggle.setColor(ChatColor.GREEN);
+                    } else if (!mmoPlayer.getPassives(pass)){
+                        toggle.setText("[Disabled]");
+                        toggle.setColor(ChatColor.RED);
+                    }
+                    passiveOptions.put(pass, toggle);
+                }
+                for (Passive pass : Passives.values()) {
+                    TextComponent component = passiveOptions.get(pass);
+                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mmo passive " + pass.getSkill() + " " + pass.getPassive()));
+                    component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Toggle passive.").color(ChatColor.AQUA).create()));
+                    player.sendMessage(ColorUtils.colorMessage("&d" + pass.getSkill() + " : " + pass.getPassive()));
+                    player.spigot().sendMessage(component);
+                }
         } else {
-            player.sendMessage(ColorUtils.colorMessage("&b/mmo passive &d<skill> §a<effect>"));
+            player.sendMessage(ColorUtils.colorMessage("&b/mmo passive|p"));
         }
     }
 
@@ -115,11 +140,11 @@ public class PassiveCommand extends SubCommand {
     public List<String> getPrimaryArguments() {
         List<String> args = new ArrayList<>();
 
-        args.add("agility");
-        args.add("excavation");
-        args.add("fishing");
-        args.add("foraging");
-        args.add("mining");
+//        args.add("agility");
+//        args.add("excavation");
+//        args.add("fishing");
+//        args.add("foraging");
+//        args.add("mining");
 
         return args;
     }
@@ -128,15 +153,15 @@ public class PassiveCommand extends SubCommand {
     public List<String> getSecondaryArguments(String[] args) {
         List<String> arg = new ArrayList<>();
 
-        if (args[1].equalsIgnoreCase("agility")) {
-            arg.add("speed");
-            arg.add("jump_boost");
-        } else if (args[1].equalsIgnoreCase("fishing")) {
-            arg.add("conduit_power");
-            arg.add("dolphins_grace");
-        } else {
-            arg.add("haste");
-        }
+//        if (args[1].equalsIgnoreCase("agility")) {
+//            arg.add("speed");
+//            arg.add("jump_boost");
+//        } else if (args[1].equalsIgnoreCase("fishing")) {
+//            arg.add("conduit_power");
+//            arg.add("dolphins_grace");
+//        } else if (args[1].equalsIgnoreCase("mining") || args[1].equalsIgnoreCase("foraging") || args[1].equalsIgnoreCase("excavation")){
+//            arg.add("haste");
+//        }
         return arg;
     }
 }

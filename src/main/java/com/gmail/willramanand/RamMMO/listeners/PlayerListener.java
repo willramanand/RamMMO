@@ -1,15 +1,23 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
+import com.archyx.aureliumskills.api.AureliumAPI;
 import com.archyx.aureliumskills.api.event.SkillLevelUpEvent;
 import com.archyx.aureliumskills.skills.Skill;
 import com.archyx.aureliumskills.skills.Skills;
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.enums.Passives;
+import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 public class PlayerListener implements Listener {
 
@@ -28,6 +36,7 @@ public class PlayerListener implements Listener {
     public void leave(PlayerQuitEvent event) {
         plugin.getConfigManager().save(event.getPlayer(), false);
     }
+
 
     @EventHandler
     public void levelUp(SkillLevelUpEvent event) {

@@ -1,4 +1,4 @@
-C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\passives\Passives.java
+C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\enums\Passives.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\commands\MobsCommand.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\commands\PassiveCommand.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\utils\ColorUtils.java
@@ -7,12 +7,14 @@ C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\c
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\commands\HelpCommand.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\mobs\MobConverter.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\boss\WolfMinion.java
+C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\enums\Commands.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\boss\MMOBoss.java
-C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\passives\Passive.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\player\MMOPlayer.java
+C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\enums\Passive.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\listeners\EntityListener.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\commands\SubCommand.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\boss\WolfBoss.java
+C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\commands\VersionCommand.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\listeners\HealthListener.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\utils\EffectChecker.java
 C:\Users\willr\IdeaProjects\RamMMO\src\main\java\com\gmail\willramanand\RamMMO\RamMMO.java

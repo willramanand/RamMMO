@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+
 public class EffectChecker {
 
     private final RamMMO plugin;
@@ -36,11 +37,7 @@ public class EffectChecker {
         if (mmoPlayer.getPassives(Passives.FISHING_DOLPHINS_GRACE)) {
             if (fishLvl >= 10 && fishLvl < 20) {
                 mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 0));
-            } else if (fishLvl >= 20 && fishLvl < 30) {
-                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 1));
-            } else if (fishLvl >= 30 && fishLvl < 40) {
-                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 1));
-            } else if (fishLvl >= 40) {
+            } else if (fishLvl >= 20) {
                 mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 1));
             }
         }
@@ -57,27 +54,23 @@ public class EffectChecker {
 
     private void checkAgility(MMOPlayer mmoPlayer) {
         int agilityLvl = AureliumAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.AGILITY);
-
         if (mmoPlayer.getPassives(Passives.AGILITY_SPEED)) {
-            if (agilityLvl >= 10 && agilityLvl < 20) {
+            if (agilityLvl >= 10 && agilityLvl < 30) {
                 mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 0));
-            } else if (agilityLvl >= 30 && agilityLvl < 40) {
-                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 1));
-            } else if (agilityLvl >= 40) {
+            } else if (agilityLvl >= 30) {
                 mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 1));
             }
         }
 
         if (mmoPlayer.getPassives(Passives.AGILITY_JUMP_BOOST)) {
 
-            if (agilityLvl >= 20 && agilityLvl < 30) {
-                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, 0));
-            } else if (agilityLvl >= 30 && agilityLvl < 40) {
+            if (agilityLvl >= 20 && agilityLvl < 40) {
                 mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, 0));
             } else if (agilityLvl >= 40) {
                 mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, 1));
             }
         }
+
     }
 
     private void checkMining(MMOPlayer mmoPlayer) {

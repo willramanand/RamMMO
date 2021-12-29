@@ -28,7 +28,7 @@ public class HelpCommand extends SubCommand {
                 String commandAlias = command.name();
                 for (String alias: command.aliases()) {
                     if (command.aliases() != null) {
-                        commandAlias += "," + alias;
+                        commandAlias += "&6,&b" + alias;
                     }
                 }
                 player.sendMessage(ColorUtils.colorMessage("&b/" + prefix + " " + commandAlias + " &e" + command.info()));
