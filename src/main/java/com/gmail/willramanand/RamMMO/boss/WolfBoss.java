@@ -22,8 +22,8 @@ import java.util.List;
 
 public class WolfBoss extends MMOBoss {
 
-    private RamMMO plugin;
-    private Wolf bossWolf;
+    private final RamMMO plugin;
+    private final Wolf bossWolf;
     private List<WolfMinion> minions;
 
     public WolfBoss(RamMMO plugin, Location loc) {

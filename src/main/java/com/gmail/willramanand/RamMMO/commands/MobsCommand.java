@@ -4,11 +4,12 @@ import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MobsCommand extends SubCommand {
 
-    private RamMMO plugin;
+    private final RamMMO plugin;
 
     public MobsCommand(RamMMO plugin) {
         this.plugin = plugin;
@@ -36,12 +37,17 @@ public class MobsCommand extends SubCommand {
     }
 
     @Override
-    public String[] aliases() {
-        return new String[0];
+    public List<String> aliases() {
+        return new ArrayList<>();
     }
 
     @Override
-    public List<String> getSubCommandArguments() {
+    public List<String> getPrimaryArguments() {
+        return null;
+    }
+
+    @Override
+    public List<String> getSecondaryArguments(String[] args) {
         return null;
     }
 }

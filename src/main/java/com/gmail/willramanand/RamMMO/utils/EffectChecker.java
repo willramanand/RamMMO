@@ -3,6 +3,8 @@ package com.gmail.willramanand.RamMMO.utils;
 import com.archyx.aureliumskills.api.AureliumAPI;
 import com.archyx.aureliumskills.skills.Skills;
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.passives.Passives;
+import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,131 +13,129 @@ import org.bukkit.potion.PotionEffectType;
 
 public class EffectChecker {
 
-    private RamMMO plugin;
-    private FileConfiguration config;
+    private final RamMMO plugin;
+    private MMOPlayer mmoPlayer;
 
     public EffectChecker(RamMMO plugin) {
         this.plugin = plugin;
     }
 
     public void checkPassives(Player player) {
-        this.config = plugin.getConfigManager().load(player.getUniqueId());
-        checkForaging(player);
-        checkExcavation(player);
-        checkAgility(player);
-        checkFishing(player);
-        checkMining(player);
+        this.mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
+        checkForaging(mmoPlayer);
+        checkExcavation(mmoPlayer);
+        checkAgility(mmoPlayer);
+        checkFishing(mmoPlayer);
+        checkMining(mmoPlayer);
     }
 
-    private void checkFishing(Player player) {
-        int fishLvl = AureliumAPI.getSkillLevel(player, Skills.FISHING);
+    private void checkFishing(MMOPlayer mmoPlayer) {
+        int fishLvl = AureliumAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.FISHING);
 
-        if (config.getBoolean("fishing.dolphins_grace")) {
+        if (mmoPlayer.getPassives(Passives.FISHING_DOLPHINS_GRACE)) {
             if (fishLvl >= 10 && fishLvl < 20) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 0));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 0));
             } else if (fishLvl >= 20 && fishLvl < 30) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 1));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 1));
             } else if (fishLvl >= 30 && fishLvl < 40) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 1));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 20, 0));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 1));
             } else if (fishLvl >= 40) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 1));
-                player.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 20, 1));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DOLPHINS_GRACE, 20, 1));
             }
         }
 
-        if (config.getBoolean("fishing.conduit_power")) {
+        if (mmoPlayer.getPassives(Passives.FISHING_CONDUIT_POWER)) {
 
             if (fishLvl >= 30 && fishLvl < 40) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 20, 0));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 20, 0));
             } else if (fishLvl >= 40) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 20, 1));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.CONDUIT_POWER, 20, 1));
             }
         }
     }
 
-    private void checkAgility(Player player) {
-        int agilityLvl = AureliumAPI.getSkillLevel(player, Skills.AGILITY);
+    private void checkAgility(MMOPlayer mmoPlayer) {
+        int agilityLvl = AureliumAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.AGILITY);
 
-        if (config.getBoolean("agility.speed")) {
+        if (mmoPlayer.getPassives(Passives.AGILITY_SPEED)) {
             if (agilityLvl >= 10 && agilityLvl < 20) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 0));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 0));
             } else if (agilityLvl >= 30 && agilityLvl < 40) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 1));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 1));
             } else if (agilityLvl >= 40) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 1));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 1));
             }
         }
 
-        if (config.getBoolean("agility.jump_boost")) {
+        if (mmoPlayer.getPassives(Passives.AGILITY_JUMP_BOOST)) {
 
             if (agilityLvl >= 20 && agilityLvl < 30) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, 0));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, 0));
             } else if (agilityLvl >= 30 && agilityLvl < 40) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, 0));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, 0));
             } else if (agilityLvl >= 40) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, 1));
+                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20, 1));
             }
         }
     }
 
-    private void checkMining(Player player) {
+    private void checkMining(MMOPlayer mmoPlayer) {
         ItemStack handItem;
-        handItem = player.getInventory().getItemInMainHand();
+        handItem = mmoPlayer.getPlayer().getInventory().getItemInMainHand();
 
         if (!isPick(handItem)) {
             return;
         }
 
-        if (!config.getBoolean("mining.haste")) {
+        if (!mmoPlayer.getPassives(Passives.MINING_HASTE)) {
             return;
         }
 
-        int mineLvl = AureliumAPI.getSkillLevel(player, Skills.MINING);
+        int mineLvl = AureliumAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.MINING);
         if (mineLvl >= 10 && mineLvl < 20) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
+            mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
         } else if (mineLvl >= 20) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 1));
+            mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 1));
         }
     }
 
-    private void checkExcavation(Player player) {
+    private void checkExcavation(MMOPlayer mmoPlayer) {
         ItemStack handItem;
-        handItem = player.getInventory().getItemInMainHand();
+        handItem = mmoPlayer.getPlayer().getInventory().getItemInMainHand();
 
         if (!isShovel(handItem)) {
             return;
         }
 
-        if (!config.getBoolean("excavation.haste")) {
+        if (!mmoPlayer.getPassives(Passives.EXCAVATION_HASTE)) {
             return;
         }
 
-        int excavateLvl = AureliumAPI.getSkillLevel(player, Skills.EXCAVATION);
+        int excavateLvl = AureliumAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.EXCAVATION);
         if (excavateLvl >= 10 && excavateLvl < 20) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
+            mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
         } else if (excavateLvl >= 20) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 1));
+            mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 1));
         }
     }
 
-    private void checkForaging(Player player) {
+    private void checkForaging(MMOPlayer mmoPlayer) {
         ItemStack handItem;
-        handItem = player.getInventory().getItemInMainHand();
+        handItem = mmoPlayer.getPlayer().getInventory().getItemInMainHand();
 
         if (!isAxe(handItem)) {
             return;
         }
 
-        if (!config.getBoolean("foraging.haste")) {
+        if (!mmoPlayer.getPassives(Passives.FORAGING_HASTE)) {
             return;
         }
 
-        int axeLvl = AureliumAPI.getSkillLevel(player, Skills.FORAGING);
+        int axeLvl = AureliumAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.FORAGING);
         if (axeLvl >= 10 && axeLvl < 20) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
+            mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
         } else if (axeLvl >= 20) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 1));
+            mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 1));
         }
     }
 

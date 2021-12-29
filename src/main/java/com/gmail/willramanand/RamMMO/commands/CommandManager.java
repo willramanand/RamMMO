@@ -16,32 +16,24 @@ import java.util.List;
 public class CommandManager implements TabExecutor {
 
     private ArrayList<SubCommand> commands = new ArrayList<>();
-    private RamMMO plugin;
+    private final RamMMO plugin;
 
     public CommandManager(RamMMO plugin) {
         this.plugin = plugin;
     }
 
     public String main = "mmo";
-    public String agility = "agility";
-    public String fishing = "fishing";
-    public String excavation = "excavation";
-    public String foraging = "foraging";
-    public String mining = "mining";
     public String boss = "boss";
     public String mobs = "mobs";
     public String help = "help";
+    public String passive = "passive";
 
     public void setup() {
         plugin.getCommand(main).setExecutor(this);
 
-        this.commands.add(new AgilityCommand(plugin));
-        this.commands.add(new ExcavationCommand(plugin));
-        this.commands.add(new FishingCommand(plugin));
-        this.commands.add(new MiningCommand(plugin));
-        this.commands.add(new ForagingCommand(plugin));
         this.commands.add(new MobsCommand(plugin));
         this.commands.add(new HelpCommand(plugin));
+        this.commands.add(new PassiveCommand(plugin));
         //this.commands.add(new BossCommand(plugin)); // WIP
     }
 
@@ -91,11 +83,9 @@ public class CommandManager implements TabExecutor {
                 return subCommand;
             }
 
-            String[] aliases;
-            int length = (aliases = subCommand.aliases()).length;
+            List<String> aliases = subCommand.aliases();
 
-            for (int var5 = 0; var5 < length; ++var5) {
-                String alias = aliases[var5];
+            for (String alias : aliases) {
                 if (name.equalsIgnoreCase(alias)) {
                     return subCommand;
                 }
@@ -110,20 +100,32 @@ public class CommandManager implements TabExecutor {
         Iterator<SubCommand> sc = this.commands.iterator();
 
         if (args.length == 1) {
-            List<String> skills = new ArrayList<>();
+            List<String> primary = new ArrayList<>();
 
             while (sc.hasNext()) {
                 SubCommand subCommand = sc.next();
-                skills.add(subCommand.name());
+                primary.add(subCommand.name());
+
+                for (String alias : subCommand.aliases()) {
+                    primary.add(alias);
+                }
             }
-            return skills;
+            return primary;
         }
         if (args.length == 2) {
             while (sc.hasNext()) {
                 SubCommand subCommand = sc.next();
 
-                if (subCommand.name().equalsIgnoreCase(args[0])) {
-                    return subCommand.getSubCommandArguments();
+                if (subCommand.name().equalsIgnoreCase(args[0]) || subCommand.aliases().contains(args[0])) {
+                    return subCommand.getPrimaryArguments();
+                }
+            }
+        } else if (args.length == 3) {
+            while (sc.hasNext()) {
+                SubCommand subCommand = sc.next();
+
+                if (subCommand.name().equalsIgnoreCase(args[0]) || subCommand.aliases().contains(args[0])) {
+                    return subCommand.getSecondaryArguments(args);
                 }
             }
         }

@@ -1,75 +1,102 @@
 package com.gmail.willramanand.RamMMO.utils;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.passives.Passive;
+import com.gmail.willramanand.RamMMO.passives.Passives;
+import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 
 public class ConfigManager {
 
-    private RamMMO plugin;
-
+    private final RamMMO plugin;
     public ConfigManager(RamMMO plugin) {
         this.plugin = plugin;
     }
 
-    public void setup(UUID playerUuid) {
+    public void setup(Player player) {
         File dir = new File(plugin.getDataFolder() + "/playerdata/");
         if (!dir.exists()) {
             dir.mkdir();
         }
 
-        File file = new File(plugin.getDataFolder() + "/playerdata/" + playerUuid + ".yml");
+        File file = new File(plugin.getDataFolder() + "/playerdata/" + player.getUniqueId() + ".yml");
 
         if (!file.exists()) {
             try {
                 file.createNewFile();
-                Bukkit.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&2Created player config for UUID: " + playerUuid));
+                Bukkit.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&2Created player config for UUID: " + player.getUniqueId()));
 
                 FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+                MMOPlayer mmoPlayer = new MMOPlayer(plugin, player);
 
                 if (file.exists()) {
-                    config.set("mining.haste", true);
 
-                    // Excavation initialize
-                    config.set("excavation.haste", true);
-
-                    // Foraging initialize
-                    config.set("foraging.haste", true);
-
-                    // Fishing initialize
-                    config.set("fishing.dolphins_grace", true);
-                    config.set("fishing.conduit_power", true);
-
-                    // Agility initialize
-                    config.set("agility.speed", true);
-                    config.set("agility.jump_boost", true);
-
+                    for (Passive passive : Passives.values()) {
+                        config.set("passives." + passive.name().toLowerCase(), true);
+                        mmoPlayer.setPassives(passive, true);
+                    }
+                    plugin.getPlayerManager().addPlayerData(mmoPlayer);
                     try {
                         config.save(file);
                     } catch (IOException e) {
-                        Bukkit.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&4Could not save player config for UUID: " + playerUuid));
+                        Bukkit.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&4Could not save player config for UUID: " + player.getUniqueId()));
                     }
                 }
             } catch (IOException e) {
-                Bukkit.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&4Could not create player config for UUID: " + playerUuid));
+                Bukkit.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&4Could not create player config for UUID: " + player.getUniqueId()));
             }
         }
     }
 
-    public FileConfiguration load(UUID playerUuid) {
-        File file = new File(plugin.getDataFolder() + "/playerdata/" + playerUuid + ".yml");
+    public void load(Player player) {
+        File file = new File(plugin.getDataFolder() + "/playerdata/" + player.getUniqueId() + ".yml");
 
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        MMOPlayer mmoPlayer = new MMOPlayer(plugin, player);
 
         if (file.exists()) {
-            return config;
+            for (Passive passive : Passives.values()) {
+                boolean isEnabled = config.getBoolean("passives." + passive.name().toLowerCase());
+                mmoPlayer.setPassives(passive, isEnabled);
+            }
+            plugin.getPlayerManager().addPlayerData(mmoPlayer);
+        } else {
+            Bukkit.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&bCould not load player config for UUID: " + player.getUniqueId()));
+            setup(player);
         }
-        Bukkit.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&bCould not load player config for UUID: " + playerUuid));
-        return null;
+    }
+
+    public void save(Player player, boolean isShutdown) {
+        File file = new File(plugin.getDataFolder() + "/playerdata/" + player.getUniqueId() + ".yml");
+        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
+
+        if (mmoPlayer == null) return;
+        if (mmoPlayer.shouldNotSave()) return;
+        if (mmoPlayer.isSaving()) return;
+        mmoPlayer.setSaving(true);
+
+        if (file.exists()) {
+            FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+            try {
+                for (Passive passive : Passives.values()) {
+                    config.set("passives." + passive.name().toLowerCase(), mmoPlayer.getPassives(passive));
+                }
+                config.save(file);
+                if (isShutdown) {
+                    plugin.getPlayerManager().removePlayerData(player.getUniqueId());
+                }
+            } catch (IOException e) {
+                Bukkit.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&bCould not save player config for UUID: " + player.getUniqueId()));
+            }
+        } else {
+            Bukkit.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&bCould not save player config for UUID: " + player.getUniqueId() + " because it does not exist!"));
+        }
+        mmoPlayer.setSaving(false);
     }
 }

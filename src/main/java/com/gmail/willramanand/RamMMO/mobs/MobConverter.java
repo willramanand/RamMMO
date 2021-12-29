@@ -9,7 +9,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 public class MobConverter {
 
-    private RamMMO plugin;
+    private final RamMMO plugin;
 
     private final int UNCOMMON_HEALTH_MULT = 2;
     private final int UNCOMMON_ARMOR = 2;

@@ -6,6 +6,8 @@ import com.gmail.willramanand.RamMMO.commands.CommandManager;
 import com.gmail.willramanand.RamMMO.listeners.EntityListener;
 import com.gmail.willramanand.RamMMO.listeners.HealthListener;
 import com.gmail.willramanand.RamMMO.listeners.PlayerListener;
+import com.gmail.willramanand.RamMMO.player.MMOPlayer;
+import com.gmail.willramanand.RamMMO.player.PlayerManager;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import com.gmail.willramanand.RamMMO.utils.ConfigManager;
 import com.gmail.willramanand.RamMMO.utils.EffectChecker;
@@ -22,11 +24,12 @@ public class RamMMO extends JavaPlugin {
 
     private RamMMO plugin = this;
     private static final Logger log = Logger.getLogger("Minecraft");
-    private CommandManager commandManager = new CommandManager(this);
-    private Formatter formatter = new Formatter(1);
-    private EffectChecker effectChecker = new EffectChecker(this);
-    private ConfigManager configManager = new ConfigManager(this);
-    private static Economy econ = null;
+    private CommandManager commandManager;
+    private Formatter formatter;
+    private EffectChecker effectChecker;
+    private ConfigManager configManager;
+    private PlayerManager playerManager;
+    private static Economy econ;
 
     @Override
     public void onEnable() {
@@ -40,11 +43,23 @@ public class RamMMO extends JavaPlugin {
             setupEconomy();
         }
 
+        commandManager = new CommandManager(this);
+        formatter = new Formatter(1);
+        effectChecker = new EffectChecker(this);
+        configManager = new ConfigManager(this);
+        playerManager = new PlayerManager(this);
+
         log.info(ColorUtils.colorMessage("[" + this.getName() + "] &6===&bENABLE START&6==="));
 
         // Config
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (!playerManager.hasPlayerData(p)) {
+                configManager.load(p);
+            }
+        }
 
         // Listeners
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
@@ -65,6 +80,9 @@ public class RamMMO extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        for (Player player : Bukkit.getOnlinePlayers())
+            configManager.save(player, true);
+
         log.info("Disabled");
     }
 
@@ -99,6 +117,10 @@ public class RamMMO extends JavaPlugin {
 
     public ConfigManager getConfigManager() {
         return configManager;
+    }
+
+    public PlayerManager getPlayerManager() {
+        return playerManager;
     }
 
     public Economy getEconomy() {

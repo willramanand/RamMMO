@@ -51,7 +51,7 @@ public class EntityListener implements Listener {
 
     private final BigDecimal BOSS_MONEY = new BigDecimal(250.0);
 
-    private RamMMO plugin;
+    private final RamMMO plugin;
     private MobConverter mobConverter;
     private SkillLeveler skillLeveler;
     private Economy econ;

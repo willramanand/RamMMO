@@ -6,7 +6,7 @@
 
     <groupId>com.gmail.willramanand</groupId>
     <artifactId>RamMMO</artifactId>
-    <version>1.2.4</version>
+    <version>1.3.0</version>
     <name>RamMMO</name>
     <description>This plugin adds MMO elements to your Spigot server.</description>
 

@@ -8,8 +8,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Wolf;
 
 public class WolfMinion {
-    private RamMMO plugin;
-    private Wolf minWolf;
+    private final RamMMO plugin;
+    private final Wolf minWolf;
 
     public WolfMinion(RamMMO plugin, Location loc, int counter, LivingEntity livingEntity) {
         this.plugin = plugin;

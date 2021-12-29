@@ -13,7 +13,7 @@ import java.util.List;
 @CommandPermission("rammmo.mmo.boss")
 public class BossCommand extends SubCommand {
 
-    private RamMMO plugin;
+    private final RamMMO plugin;
 
     public BossCommand(RamMMO plugin) {
         this.plugin = plugin;
@@ -53,15 +53,20 @@ public class BossCommand extends SubCommand {
     }
 
     @Override
-    public String[] aliases() {
-        return new String[0];
+    public List<String> aliases() {
+        return new ArrayList<>();
     }
 
     @Override
-    public List<String> getSubCommandArguments() {
+    public List<String> getPrimaryArguments() {
         List<String> args = new ArrayList<>();
 
         args.add("wolf");
         return args;
+    }
+
+    @Override
+    public List<String> getSecondaryArguments(String[] args) {
+        return null;
     }
 }

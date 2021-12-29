@@ -17,7 +17,8 @@ import org.bukkit.metadata.MetadataValue;
 import java.util.List;
 
 public class HealthListener implements Listener {
-    private RamMMO plugin;
+
+    private final RamMMO plugin;
 
     public HealthListener(RamMMO plugin) {
         this.plugin = plugin;
@@ -28,8 +29,10 @@ public class HealthListener implements Listener {
 
         Player player = event.getPlayer();
 
-        List<Entity> from = event.getFrom().getWorld().getNearbyEntities(event.getFrom(), 5, 5, 5).stream().filter(ent -> ent instanceof LivingEntity && !(ent instanceof Boss || ent instanceof Player || ent instanceof MMOBoss || ent instanceof ArmorStand)).toList();
-        List<Entity> to = event.getTo().getWorld().getNearbyEntities(event.getTo(), 5, 5, 5).stream().filter(ent -> ent instanceof LivingEntity && !(ent instanceof Boss || ent instanceof Player || ent instanceof MMOBoss || ent instanceof ArmorStand)).toList();
+        List<Entity> from = event.getFrom().getWorld().getNearbyEntities(event.getFrom(), 5, 5, 5).stream()
+                .filter(ent -> ent instanceof LivingEntity && !(ent instanceof Boss || ent instanceof Player || ent instanceof MMOBoss || ent instanceof ArmorStand)).toList();
+        List<Entity> to = event.getTo().getWorld().getNearbyEntities(event.getTo(), 5, 5, 5).stream()
+                .filter(ent -> ent instanceof LivingEntity && !(ent instanceof Boss || ent instanceof Player || ent instanceof MMOBoss || ent instanceof ArmorStand)).toList();
 
         to.forEach(ent -> {
             LivingEntity entity = (LivingEntity) ent;
@@ -93,7 +96,8 @@ public class HealthListener implements Listener {
 
     @EventHandler
     public void onMobDamage(EntityDamageEvent event) {
-        List<Entity> playersNearby = event.getEntity().getLocation().getWorld().getNearbyEntities(event.getEntity().getLocation(), 5, 5, 5).stream().filter(player -> player instanceof Player).toList();
+        List<Entity> playersNearby = event.getEntity().getLocation().getWorld().getNearbyEntities(event.getEntity().getLocation(), 5, 5, 5).stream()
+                .filter(player -> player instanceof Player).toList();
 
         playersNearby.forEach(player -> {
             if (!(player instanceof Player)) {
@@ -143,7 +147,7 @@ public class HealthListener implements Listener {
     // Make sure health display is off for entities outside of player range.
     @EventHandler
     public void onMobMove(EntityMoveEvent event) {
-        if (!(event.getEntity() instanceof LivingEntity)) return;
+        if (!(event.getEntity() instanceof LivingEntity) || event.getEntity() instanceof Boss || event.getEntity() instanceof MMOBoss) return;
 
         LivingEntity entity = (LivingEntity) event.getEntity();
 
