@@ -1,7 +1,5 @@
 package com.gmail.willramanand.RamMMO.passives;
 
-import com.gmail.willramanand.RamMMO.passives.Passive;
-
 public enum Passives implements Passive {
     MINING_HASTE,
     FORAGING_HASTE,

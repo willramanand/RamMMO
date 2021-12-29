@@ -5,7 +5,6 @@ import com.archyx.aureliumskills.skills.Skills;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.passives.Passives;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;

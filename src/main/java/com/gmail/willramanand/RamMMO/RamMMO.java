@@ -6,7 +6,6 @@ import com.gmail.willramanand.RamMMO.commands.CommandManager;
 import com.gmail.willramanand.RamMMO.listeners.EntityListener;
 import com.gmail.willramanand.RamMMO.listeners.HealthListener;
 import com.gmail.willramanand.RamMMO.listeners.PlayerListener;
-import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import com.gmail.willramanand.RamMMO.player.PlayerManager;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import com.gmail.willramanand.RamMMO.utils.ConfigManager;

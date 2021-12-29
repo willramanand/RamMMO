@@ -1,11 +1,7 @@
 package com.gmail.willramanand.RamMMO.player;
 
-import com.archyx.aureliumskills.api.AureliumAPI;
-import com.archyx.aureliumskills.skills.Skill;
-import com.archyx.aureliumskills.skills.Skills;
-
-import com.gmail.willramanand.RamMMO.passives.Passive;
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.passives.Passive;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
