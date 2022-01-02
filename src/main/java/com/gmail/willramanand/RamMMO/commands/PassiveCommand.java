@@ -6,8 +6,10 @@ import com.gmail.willramanand.RamMMO.enums.Passive;
 import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -94,26 +96,24 @@ public class PassiveCommand extends SubCommand {
                 player.performCommand("mmo passive");
             }
         } else if (args.length == 1) {
-                player.sendMessage(ColorUtils.colorMessage("&6---- &bPassives &6----"));
-                Map<Passive, TextComponent> passiveOptions = new HashMap<>();
-                for (Passive pass : Passives.values()) {
-                    TextComponent toggle = new TextComponent();
-                    if (mmoPlayer.getPassives(pass)) {
-                        toggle.setText("[Enabled]");
-                        toggle.setColor(ChatColor.GREEN);
-                    } else if (!mmoPlayer.getPassives(pass)){
-                        toggle.setText("[Disabled]");
-                        toggle.setColor(ChatColor.RED);
-                    }
-                    passiveOptions.put(pass, toggle);
+            player.sendMessage(ColorUtils.colorMessage("&6---- &bPassives &6----"));
+            for (Passive pass : Passives.values()) {
+                Component component = null;
+
+                if (mmoPlayer.getPassives(pass)) {
+                    component = Component.text("[Enabled]");
+                    component = component.color(TextColor.color(85, 255, 85));
+                } else if (!mmoPlayer.getPassives(pass)) {
+                    component = Component.text("[Disabled]");
+                    component = component.color(TextColor.color(255, 85, 85));
                 }
-                for (Passive pass : Passives.values()) {
-                    TextComponent component = passiveOptions.get(pass);
-                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mmo passive " + pass.getSkill() + " " + pass.getPassive()));
-                    component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Toggle passive.").color(ChatColor.AQUA).create()));
-                    player.sendMessage(ColorUtils.colorMessage("&d" + pass.getSkill() + " : " + pass.getPassive()));
-                    player.spigot().sendMessage(component);
-                }
+
+                component = component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/mmo passive " + pass.getSkill() + " " + pass.getPassive()));
+                component = component.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Toggle passive").color(TextColor.color(255, 85, 255))));
+
+                player.sendMessage(ColorUtils.colorMessage("&d" + pass.getSkill() + " : " + pass.getPassive()));
+                player.sendMessage(component);
+            }
         } else {
             player.sendMessage(ColorUtils.colorMessage("&b/mmo passive|p"));
         }

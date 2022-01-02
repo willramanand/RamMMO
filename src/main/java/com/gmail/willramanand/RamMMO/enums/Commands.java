@@ -6,7 +6,10 @@ public enum Commands {
     VERSION("version"),
     MOBS("mobs"),
     HELP("help"),
-    PASSIVE("passive");
+    PASSIVE("passive"),
+    ITEM("item")
+
+    ;
 
 
     private final String name;

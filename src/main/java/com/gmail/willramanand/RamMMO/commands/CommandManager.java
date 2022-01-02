@@ -31,6 +31,7 @@ public class CommandManager implements TabExecutor {
         this.commands.add(new HelpCommand(plugin));
         this.commands.add(new VersionCommand(plugin));
         this.commands.add(new PassiveCommand(plugin));
+        this.commands.add(new ItemTestCommand());
         //this.commands.add(new BossCommand(plugin)); // WIP
     }
 
@@ -45,14 +46,15 @@ public class CommandManager implements TabExecutor {
 
         if (command.getName().equalsIgnoreCase(Commands.MAIN.getName())) {
             if (args.length == 0) {
-                player.sendMessage(ColorUtils.colorMessage("&ePlease add arguments to your command. Type &d/mmo help &e for info."));
+                player.performCommand("/mmo h");
                 return true;
             }
 
             SubCommand target = this.get(args[0]);
 
             if (target == null) {
-                player.sendMessage(ColorUtils.colorMessage("&eInvalid subcommand. Type &d/mmo help &e for info."));
+                player.sendMessage(ColorUtils.colorMessage("&eInvalid subcommand!"));
+                player.performCommand("/mmo h");
                 return true;
             }
 

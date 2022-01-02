@@ -5,7 +5,7 @@ author: ${project.author}
 api-version: '1.18'
 main: com.gmail.willramanand.RamMMO.RamMMO
 depend: [AureliumSkills]
-softdepend: [Essentials]
+softdepend: [Vault]
 commands:
   mmo:
     description: Base command for RamMMO.
@@ -13,4 +13,6 @@ permissions:
   rammmo.mmo:
     default: true
   rammmo.boss:
+    default: op
+  rammmo.item:
     default: op
