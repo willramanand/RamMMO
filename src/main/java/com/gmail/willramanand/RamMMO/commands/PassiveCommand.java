@@ -1,7 +1,6 @@
 package com.gmail.willramanand.RamMMO.commands;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.enums.Commands;
 import com.gmail.willramanand.RamMMO.enums.Passive;
 import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
@@ -13,9 +12,7 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PassiveCommand extends SubCommand {
 
@@ -37,7 +34,6 @@ public class PassiveCommand extends SubCommand {
         if (args.length == 3) {
             try {
                 if (args[1].equalsIgnoreCase("agility")) {
-
                     if (args[2].equalsIgnoreCase("speed")) {
                         passive = Passives.AGILITY_SPEED;
                     } else if (args[2].equalsIgnoreCase("jump_boost")) {
@@ -139,29 +135,12 @@ public class PassiveCommand extends SubCommand {
     @Override
     public List<String> getPrimaryArguments() {
         List<String> args = new ArrayList<>();
-
-//        args.add("agility");
-//        args.add("excavation");
-//        args.add("fishing");
-//        args.add("foraging");
-//        args.add("mining");
-
         return args;
     }
 
     @Override
     public List<String> getSecondaryArguments(String[] args) {
         List<String> arg = new ArrayList<>();
-
-//        if (args[1].equalsIgnoreCase("agility")) {
-//            arg.add("speed");
-//            arg.add("jump_boost");
-//        } else if (args[1].equalsIgnoreCase("fishing")) {
-//            arg.add("conduit_power");
-//            arg.add("dolphins_grace");
-//        } else if (args[1].equalsIgnoreCase("mining") || args[1].equalsIgnoreCase("foraging") || args[1].equalsIgnoreCase("excavation")){
-//            arg.add("haste");
-//        }
         return arg;
     }
 }

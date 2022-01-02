@@ -2,7 +2,6 @@ package com.gmail.willramanand.RamMMO.commands;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.boss.WolfBoss;
-import com.gmail.willramanand.RamMMO.enums.Commands;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

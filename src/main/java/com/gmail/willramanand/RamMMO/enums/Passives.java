@@ -1,20 +1,24 @@
 package com.gmail.willramanand.RamMMO.enums;
 
+import org.bukkit.potion.PotionEffectType;
+
 public enum Passives implements Passive {
-    MINING_HASTE("mining", "haste"),
-    FORAGING_HASTE("foraging", "haste"),
-    EXCAVATION_HASTE("excavation", "haste"),
-    AGILITY_JUMP_BOOST("agility", "jump_boost"),
-    AGILITY_SPEED("agility", "speed"),
-    FISHING_CONDUIT_POWER("fishing", "conduit_power"),
-    FISHING_DOLPHINS_GRACE("fishing", "dolphins_grace");
+    MINING_HASTE("mining", "haste", PotionEffectType.FAST_DIGGING),
+    FORAGING_HASTE("foraging", "haste", PotionEffectType.FAST_DIGGING),
+    EXCAVATION_HASTE("excavation", "haste", PotionEffectType.FAST_DIGGING),
+    AGILITY_JUMP_BOOST("agility", "jump_boost", PotionEffectType.JUMP),
+    AGILITY_SPEED("agility", "speed", PotionEffectType.SPEED),
+    FISHING_CONDUIT_POWER("fishing", "conduit_power", PotionEffectType.CONDUIT_POWER),
+    FISHING_DOLPHINS_GRACE("fishing", "dolphins_grace", PotionEffectType.DOLPHINS_GRACE);
 
     private final String skill;
     private final String passive;
+    private final PotionEffectType effect;
 
-    Passives(String skill, String passive) {
+    Passives(String skill, String passive, PotionEffectType effect) {
         this.skill = skill;
         this.passive = passive;
+        this.effect = effect;
     }
 
     public String getSkill() {
@@ -25,4 +29,7 @@ public enum Passives implements Passive {
         return passive;
     }
 
+    public PotionEffectType getEffect() {
+        return effect;
+    }
 }

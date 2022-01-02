@@ -47,7 +47,7 @@ public class PlayerListener implements Listener {
             player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked &dSpeed II &epassive effect."));
             player.sendMessage(ColorUtils.colorMessage("&eReach level &a40&e to unlock &dJump Boost II&e."));
         } else if (skill == Skills.AGILITY && lvl == 40) {
-            player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked &dJump Boost II&epassive effect."));
+            player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked &dJump Boost II &epassive effect."));
             player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked all additional passive effects for &dAgility&e."));
         }
 

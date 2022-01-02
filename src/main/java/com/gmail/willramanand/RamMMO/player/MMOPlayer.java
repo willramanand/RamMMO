@@ -16,6 +16,7 @@ public class MMOPlayer {
     private final UUID uuid;
 
     private final Map<Passive, Boolean> passives;
+    private final Map<Passive, Integer> passiveLvl;
 
     private boolean saving;
     private boolean shouldSave;
@@ -27,13 +28,16 @@ public class MMOPlayer {
         this.saving = false;
         this.shouldSave = true;
         this.passives = new HashMap<>();
+        this.passiveLvl = new HashMap<>();
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public UUID getUuid() { return uuid; }
+    public UUID getUuid() {
+        return uuid;
+    }
 
     public void setPassives(Passive passive, boolean enabled) {
         this.passives.put(passive, enabled);

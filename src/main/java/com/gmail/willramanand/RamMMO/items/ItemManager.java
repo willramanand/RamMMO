@@ -19,11 +19,11 @@ public class ItemManager {
             ItemStack newItem = new ItemStack(item.getBaseItem());
             ItemMeta meta = newItem.getItemMeta();
 
-            meta.displayName(item.getName());
+            meta.displayName(item.getName().color(TextColor.color(255, 170, 0)));
 
             List<Component> lore = new ArrayList<>();
             for (Component cp : item.getLore() ) {
-                cp.color(TextColor.color(137, 50, 183));
+                cp = cp.color(TextColor.color(255, 85, 255));
                 lore.add(cp);
             }
             meta.lore(lore);

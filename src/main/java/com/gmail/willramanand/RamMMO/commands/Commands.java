@@ -1,4 +1,4 @@
-package com.gmail.willramanand.RamMMO.enums;
+package com.gmail.willramanand.RamMMO.commands;
 
 public enum Commands {
     MAIN("mmo"),

@@ -90,8 +90,8 @@ public class RamMMO extends JavaPlugin {
                 }
             }
         }.runTaskTimer(this, 0L, 2L);
-
-        log.info(ColorUtils.colorMessage("[" + this.getName() + "] &6=== &bENABLE &2COMPLETE &6( took &d" + startTime +"&6) ==="));
+        startTime = System.currentTimeMillis() - startTime;
+        log.info(ColorUtils.colorMessage("[" + this.getName() + "] &6=== &bENABLE &2COMPLETE &6(&eTook &d" + startTime +"ms&6) ==="));
     }
 
     @Override
