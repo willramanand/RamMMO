@@ -1,1 +1,5 @@
+com\gmail\willramanand\RamMMO\config\ConfigManager.class
+com\gmail\willramanand\RamMMO\boss\IBoss.class
 com\gmail\willramanand\RamMMO\commands\Commands.class
+com\gmail\willramanand\RamMMO\boss\Boss.class
+com\gmail\willramanand\RamMMO\listeners\BossListener.class

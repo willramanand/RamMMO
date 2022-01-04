@@ -1,13 +1,10 @@
 package com.gmail.willramanand.RamMMO.boss;
 
-public abstract class MMOBoss {
-    public abstract void name();
+import com.gmail.willramanand.RamMMO.RamMMO;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.persistence.PersistentDataType;
 
-    public abstract void setAttributes();
+public abstract class MMOBoss implements IBoss {
 
-    public abstract void setEffects();
-
-    public abstract void clearEffects();
-
-    public abstract void nearbyEntities();
 }

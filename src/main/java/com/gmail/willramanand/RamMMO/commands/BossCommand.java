@@ -1,7 +1,6 @@
 package com.gmail.willramanand.RamMMO.commands;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.boss.WolfBoss;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -29,7 +28,6 @@ public class BossCommand extends SubCommand {
             try {
                 if (args.length == 2) {
                     if (args[1].equalsIgnoreCase("wolf")) {
-                        new WolfBoss(plugin, loc);
                     } else {
                         player.sendMessage("§4Valid agility arguments: wolf");
                     }

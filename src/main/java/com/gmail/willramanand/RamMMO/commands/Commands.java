@@ -7,7 +7,7 @@ public enum Commands {
     MOBS("mobs"),
     HELP("help"),
     PASSIVE("passive"),
-    ITEM("item")
+    ITEM("item"),
 
     ;
 

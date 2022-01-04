@@ -2,17 +2,13 @@ package com.gmail.willramanand.RamMMO;
 
 import com.archyx.aureliumskills.api.AureliumAPI;
 import com.gmail.willramanand.RamMMO.commands.CommandManager;
+import com.gmail.willramanand.RamMMO.config.ConfigManager;
 import com.gmail.willramanand.RamMMO.items.ItemManager;
 import com.gmail.willramanand.RamMMO.items.recipe.RecipeManager;
-import com.gmail.willramanand.RamMMO.listeners.EntityListener;
-import com.gmail.willramanand.RamMMO.listeners.HealthListener;
-import com.gmail.willramanand.RamMMO.listeners.ItemListener;
-import com.gmail.willramanand.RamMMO.listeners.PlayerListener;
+import com.gmail.willramanand.RamMMO.listeners.*;
 import com.gmail.willramanand.RamMMO.player.PlayerManager;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
-import com.gmail.willramanand.RamMMO.utils.ConfigManager;
 import com.gmail.willramanand.RamMMO.utils.EffectChecker;
-import com.gmail.willramanand.RamMMO.utils.Formatter;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -27,8 +23,8 @@ import java.util.logging.Logger;
 public class RamMMO extends JavaPlugin {
 
     private static final Logger log = Logger.getLogger("Minecraft");
+    public static RamMMO i;
     private CommandManager commandManager;
-    private Formatter formatter;
     private EffectChecker effectChecker;
     private ConfigManager configManager;
     private PlayerManager playerManager;
@@ -39,12 +35,14 @@ public class RamMMO extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        i = this;
+
         long startTime = System.currentTimeMillis();
-        log.info(ColorUtils.colorMessage("[" + this.getName() + "] &6===&bENABLE START&6==="));
+        log.info(ColorUtils.colorMessage("[" + this.getName() + "] &6===&b ENABLE START &6==="));
         // Dependencies
         if (!AureliumAPI.getPlugin().isEnabled()) {
             log.info(ColorUtils.colorMessage("[" + this.getName() + "] &4AureliumSkills not detected! Disabling..."));
-            getServer().getPluginManager().disablePlugin(this);
+            setEnabled(false);
         }
 
         if (isVaultActive()) {
@@ -53,7 +51,6 @@ public class RamMMO extends JavaPlugin {
         }
 
         commandManager = new CommandManager(this);
-        formatter = new Formatter(1);
         effectChecker = new EffectChecker(this);
         configManager = new ConfigManager(this);
         playerManager = new PlayerManager(this);
@@ -73,6 +70,7 @@ public class RamMMO extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EntityListener(this), this);
         Bukkit.getPluginManager().registerEvents(new HealthListener(this), this);
         Bukkit.getPluginManager().registerEvents(new ItemListener(this), this);
+        //Bukkit.getPluginManager().registerEvents(new BossListener(this), this);
 
         // Commands
         commandManager.setup();
@@ -102,6 +100,10 @@ public class RamMMO extends JavaPlugin {
         log.info("Disabled");
     }
 
+    public static RamMMO getInstance() {
+        return i;
+    }
+
     public boolean isVaultActive() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
             log.warning("Vault is not installed, disabling Vault integration!");
@@ -112,10 +114,6 @@ public class RamMMO extends JavaPlugin {
 
     public CommandManager getCommandManager() {
         return commandManager;
-    }
-
-    public Formatter getFormatter() {
-        return formatter;
     }
 
     public EffectChecker getChecker() {
@@ -142,4 +140,5 @@ public class RamMMO extends JavaPlugin {
     public static Economy getEconomy() {
         return econ;
     }
+
 }

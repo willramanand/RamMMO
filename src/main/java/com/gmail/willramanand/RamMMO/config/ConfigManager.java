@@ -1,9 +1,10 @@
-package com.gmail.willramanand.RamMMO.utils;
+package com.gmail.willramanand.RamMMO.config;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.enums.Passive;
 import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
+import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -99,4 +100,5 @@ public class ConfigManager {
         }
         mmoPlayer.setSaving(false);
     }
+
 }

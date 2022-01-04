@@ -162,12 +162,11 @@ public class EntityListener implements Listener {
             event.setDroppedExp((int) xpMult * xp);
             for (ItemStack item : droppedItems) {
                 for (int i = 0; i < dropMult; i++) {
-                    if (!(EnchantmentTarget.ARMOR.includes(item)) || !(EnchantmentTarget.TOOL.includes(item)))
+                    if (!(EnchantmentTarget.ARMOR.includes(item)) && !(EnchantmentTarget.TOOL.includes(item)))
                         event.getEntity().getWorld().dropItem(entity.getLocation(), item);
                     ;
                 }
             }
-            player.sendMessage(String.format("You killed case %d mob and received %dx XP, $ %d, and %dx drops", rarity, (int) xpMult, (int) money, (int) dropMult));
         } else {
             econ.depositPlayer(player, COMMON_MONEY);
         }

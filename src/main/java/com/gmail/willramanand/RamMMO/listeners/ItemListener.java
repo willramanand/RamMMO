@@ -5,8 +5,6 @@ import com.gmail.willramanand.RamMMO.items.Item;
 import com.gmail.willramanand.RamMMO.items.ItemManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,9 +47,7 @@ public class ItemListener implements Listener {
         if (player.getInventory().getChestplate() == null || player.getInventory().getChestplate().lore() == null) {
             return;
         }
-
-        if (player.isSneaking() && player.isGliding() && player.getInventory().getChestplate().lore().contains(Item.EMPOWERED_ELYTRA.getLore().get(0))) {
-            event.getPlayer().stopSound(Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, SoundCategory.PLAYERS);
+        if (player.isSneaking() && player.isGliding() && player.getInventory().getChestplate().lore().contains(ItemManager.getItem(Item.EMPOWERED_ELYTRA).lore().get(0))) {
             event.getPlayer().boostElytra(new ItemStack(Material.FIREWORK_ROCKET));
         }
     }
@@ -88,7 +84,7 @@ public class ItemListener implements Listener {
             return;
         }
 
-        if (player.getInventory().getChestplate().lore().contains(Item.NETHERFIRE_CHEST.getLore().get(0)) && isFireEffect(event.getCause())) {
+        if (player.getInventory().getChestplate().lore().contains(ItemManager.getItem(Item.NETHERFIRE_CHEST).lore().get(0)) && isFireEffect(event.getCause())) {
             event.setDamage(0);
             player.setFireTicks(0);
             event.setCancelled(true);
@@ -102,10 +98,9 @@ public class ItemListener implements Listener {
         }
 
         Player player = (Player) event.getEntity();
-        Component setBonus = Component.newline().content("Set Bonus: -20% Damage Taken");
 
         for (ItemStack item : player.getInventory().getArmorContents()) {
-            if (item == null || item.lore() == null || !(item.lore().contains(setBonus))) {
+            if (item == null || item.lore() == null || !(item.lore().contains(ItemManager.getItem(Item.NETHERFIRE_CHEST).lore().get(1)))) {
                 return;
             }
         }
