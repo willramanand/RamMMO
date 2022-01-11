@@ -4,7 +4,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public enum Passives implements Passive {
     MINING_HASTE("mining", "haste", PotionEffectType.FAST_DIGGING),
-    FORAGING_HASTE("foraging", "haste", PotionEffectType.FAST_DIGGING),
+    WOODCUTTING_HASTE("foraging", "haste", PotionEffectType.FAST_DIGGING),
     EXCAVATION_HASTE("excavation", "haste", PotionEffectType.FAST_DIGGING),
     AGILITY_JUMP_BOOST("agility", "jump_boost", PotionEffectType.JUMP),
     AGILITY_SPEED("agility", "speed", PotionEffectType.SPEED),

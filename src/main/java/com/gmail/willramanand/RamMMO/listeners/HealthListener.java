@@ -8,7 +8,10 @@ import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -96,16 +99,13 @@ public class HealthListener implements Listener {
         List<Entity> playersNearby = event.getEntity().getLocation().getWorld().getNearbyEntities(event.getEntity().getLocation(), 5, 5, 5).stream().filter(player -> player instanceof Player).toList();
 
         playersNearby.forEach(player -> {
-            if (!(player instanceof Player)) {
-                return;
-            }
+            if (!(player instanceof Player)) return;
             Player p = (Player) player;
 
+            if (!(event.getEntity() instanceof LivingEntity)) return;
             LivingEntity entity = (LivingEntity) event.getEntity();
 
-            if (entity instanceof Boss || mmoBoss.isBoss((LivingEntity) event.getEntity())) {
-                return;
-            }
+            if (entity instanceof Boss || mmoBoss.isBoss((LivingEntity) event.getEntity())) return;
 
             String maxHealth = Formatter.decimalFormat(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), 1);
             String currHealth = Formatter.decimalFormat((entity.getHealth() - event.getFinalDamage() < 0) ? 0 : entity.getHealth() - event.getFinalDamage(), 1);
@@ -175,11 +175,10 @@ public class HealthListener implements Listener {
                         entity.setCustomNameVisible(true);
 
                     } else {
-                        if (entity.getName().contains("☠")) {
+                        if (entity.getName().contains("☠") || entity.getCustomName() == null) {
                             return;
                         }
                         entity.getPersistentDataContainer().set(new NamespacedKey(plugin, "Nickname"), PersistentDataType.STRING, entity.getCustomName());
-
                         if (nickContain != null) {
                             mobName = nickContain;
                             entity.setCustomName(ColorUtils.colorMessage(mobName + "&8 | &6&l☠ &f" + currHealth + "&8/&f" + maxHealth));

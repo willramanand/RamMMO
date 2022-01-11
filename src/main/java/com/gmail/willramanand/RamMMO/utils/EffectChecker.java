@@ -1,12 +1,13 @@
 package com.gmail.willramanand.RamMMO.utils;
 
-import com.archyx.aureliumskills.api.AureliumAPI;
-import com.archyx.aureliumskills.skills.Skills;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.items.Item;
 import com.gmail.willramanand.RamMMO.items.ItemManager;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
+import com.gmail.willramanand.RamSkills.RamSkills;
+import com.gmail.willramanand.RamSkills.player.PlayerManager;
+import com.gmail.willramanand.RamSkills.skills.Skills;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,6 +21,7 @@ import java.util.List;
 public class EffectChecker {
 
     private final RamMMO plugin;
+    private final PlayerManager skillsPlayerManager = RamSkills.getInstance().getPlayerManager();
     private MMOPlayer mmoPlayer;
     private final List<PotionEffectType> harmfulPotion = new ArrayList<>();
 
@@ -45,7 +47,7 @@ public class EffectChecker {
     }
 
     private void checkFishing(MMOPlayer mmoPlayer) {
-        int fishLvl = AureliumAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.FISHING);
+        int fishLvl = skillsPlayerManager.getPlayerData(mmoPlayer.getPlayer()).getSkillLevel(Skills.FISHING);
 
         if (mmoPlayer.getPassives(Passives.FISHING_DOLPHINS_GRACE)) {
             if (fishLvl >= 10 && fishLvl < 20) {
@@ -66,7 +68,7 @@ public class EffectChecker {
     }
 
     private void checkAgility(MMOPlayer mmoPlayer) {
-        int agilityLvl = AureliumAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.AGILITY);
+        int agilityLvl = skillsPlayerManager.getPlayerData(mmoPlayer.getPlayer()).getSkillLevel(Skills.AGILITY);
         if (mmoPlayer.getPassives(Passives.AGILITY_SPEED)) {
             if (agilityLvl >= 10 && agilityLvl < 30) {
                 mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 0));
@@ -98,7 +100,7 @@ public class EffectChecker {
             return;
         }
 
-        int mineLvl = AureliumAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.MINING);
+        int mineLvl = skillsPlayerManager.getPlayerData(mmoPlayer.getPlayer()).getSkillLevel(Skills.MINING);
         if (mineLvl >= 10 && mineLvl < 20) {
             mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
         } else if (mineLvl >= 20) {
@@ -118,7 +120,7 @@ public class EffectChecker {
             return;
         }
 
-        int excavateLvl = AureliumAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.EXCAVATION);
+        int excavateLvl = skillsPlayerManager.getPlayerData(mmoPlayer.getPlayer()).getSkillLevel(Skills.EXCAVATION);
         if (excavateLvl >= 10 && excavateLvl < 20) {
             mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
         } else if (excavateLvl >= 20) {
@@ -134,11 +136,11 @@ public class EffectChecker {
             return;
         }
 
-        if (!mmoPlayer.getPassives(Passives.FORAGING_HASTE)) {
+        if (!mmoPlayer.getPassives(Passives.WOODCUTTING_HASTE)) {
             return;
         }
 
-        int axeLvl = AureliumAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.FORAGING);
+        int axeLvl = skillsPlayerManager.getPlayerData(mmoPlayer.getPlayer()).getSkillLevel(Skills.WOODCUTTING);
         if (axeLvl >= 10 && axeLvl < 20) {
             mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
         } else if (axeLvl >= 20) {

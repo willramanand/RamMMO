@@ -4,7 +4,7 @@ description: ${project.description}
 author: ${project.author}
 api-version: '1.18'
 main: com.gmail.willramanand.RamMMO.RamMMO
-depend: [AureliumSkills]
+depend: [RamSkills]
 softdepend: [Vault]
 commands:
   mmo:

@@ -1,10 +1,10 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
-import com.archyx.aureliumskills.api.event.SkillLevelUpEvent;
-import com.archyx.aureliumskills.skills.Skill;
-import com.archyx.aureliumskills.skills.Skills;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import com.gmail.willramanand.RamSkills.events.SkillLevelUpEvent;
+import com.gmail.willramanand.RamSkills.skills.Skill;
+import com.gmail.willramanand.RamSkills.skills.Skills;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +34,7 @@ public class PlayerListener implements Listener {
     public void levelUp(SkillLevelUpEvent event) {
         Player player = event.getPlayer();
         Skill skill = event.getSkill();
-        int lvl = event.getLevel();
+        int lvl = event.getSkillLvl();
 
         // Agility
         if (skill == Skills.AGILITY && lvl == 10) {
@@ -85,12 +85,12 @@ public class PlayerListener implements Listener {
         }
 
         // Foraging
-        if (skill == Skills.FORAGING && lvl == 10) {
+        if (skill == Skills.WOODCUTTING && lvl == 10) {
             player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked &dHaste &epassive effect."));
             player.sendMessage(ColorUtils.colorMessage("&eReach level &a20&e to unlock &dHaste II&e."));
-        } else if (skill == Skills.FORAGING && lvl == 20) {
+        } else if (skill == Skills.WOODCUTTING && lvl == 20) {
             player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked &dHaste II &epassive effect."));
-            player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked all additional passive effects for &dForaging&e."));
+            player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked all additional passive effects for &dWoodcutting&e."));
         }
     }
 }

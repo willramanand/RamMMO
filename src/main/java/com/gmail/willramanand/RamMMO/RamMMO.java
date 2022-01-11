@@ -1,6 +1,5 @@
 package com.gmail.willramanand.RamMMO;
 
-import com.archyx.aureliumskills.api.AureliumAPI;
 import com.gmail.willramanand.RamMMO.commands.CommandManager;
 import com.gmail.willramanand.RamMMO.config.ConfigManager;
 import com.gmail.willramanand.RamMMO.items.ItemManager;
@@ -40,8 +39,8 @@ public class RamMMO extends JavaPlugin {
         long startTime = System.currentTimeMillis();
         log.info(ColorUtils.colorMessage("[" + this.getName() + "] &6===&b ENABLE START &6==="));
         // Dependencies
-        if (!AureliumAPI.getPlugin().isEnabled()) {
-            log.info(ColorUtils.colorMessage("[" + this.getName() + "] &4AureliumSkills not detected! Disabling..."));
+        if (getServer().getPluginManager().getPlugin("RamSkills") == null) {
+            log.info(ColorUtils.colorMessage("[" + this.getName() + "] &4RamSkills not detected! Disabling..."));
             setEnabled(false);
         }
 

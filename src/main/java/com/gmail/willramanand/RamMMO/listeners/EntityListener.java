@@ -1,19 +1,17 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
-import com.archyx.aureliumskills.api.AureliumAPI;
-import com.archyx.aureliumskills.leveler.SkillLeveler;
-import com.archyx.aureliumskills.skills.Skill;
-import com.archyx.aureliumskills.skills.Skills;
-import com.archyx.aureliumskills.skills.archery.ArcheryLeveler;
-import com.archyx.aureliumskills.skills.archery.ArcherySource;
-import com.archyx.aureliumskills.skills.fighting.FightingLeveler;
-import com.archyx.aureliumskills.skills.fighting.FightingSource;
-import com.archyx.aureliumskills.source.Source;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.boss.MMOBoss;
 import com.gmail.willramanand.RamMMO.items.Item;
 import com.gmail.willramanand.RamMMO.items.ItemManager;
 import com.gmail.willramanand.RamMMO.mobs.MobConverter;
+import com.gmail.willramanand.RamSkills.RamSkills;
+import com.gmail.willramanand.RamSkills.leveler.SkillLeveler;
+import com.gmail.willramanand.RamSkills.skills.Skill;
+import com.gmail.willramanand.RamSkills.skills.Skills;
+import com.gmail.willramanand.RamSkills.skills.combat.CombatLeveler;
+import com.gmail.willramanand.RamSkills.skills.combat.CombatSource;
+import com.gmail.willramanand.RamSkills.source.Source;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.EnchantmentTarget;
@@ -116,19 +114,9 @@ public class EntityListener implements Listener {
 
             ItemStack handItem = player.getInventory().getItemInMainHand();
 
-            Skill skill;
-            SkillLeveler skillLeveler;
-            Source source;
-
-            if (plugin.getChecker().isBow(handItem)) {
-                skill = Skills.ARCHERY;
-                skillLeveler = new ArcheryLeveler(AureliumAPI.getPlugin());
-                source = ArcherySource.valueOf(entity.getType().toString());
-            } else {
-                skill = Skills.FIGHTING;
-                skillLeveler = new FightingLeveler(AureliumAPI.getPlugin());
-                source = FightingSource.valueOf(entity.getType().toString());
-            }
+            Skill skill = Skills.COMBAT;
+            SkillLeveler skillLeveler = new CombatLeveler(RamSkills.getInstance());
+            Source source = CombatSource.valueOf(entity.getType().toString());
 
             double money = 0.0;
             double xpMult = 1.0;
@@ -158,7 +146,7 @@ public class EntityListener implements Listener {
             }
 
             econ.depositPlayer(player, money);
-            AureliumAPI.addXp(player, skill, xpMult * skillLeveler.getXp(player, source));
+            RamSkills.getInstance().getLeveler().addXp(player, skill, xpMult * skillLeveler.getXp(player, source));
             event.setDroppedExp((int) xpMult * xp);
             for (ItemStack item : droppedItems) {
                 for (int i = 0; i < dropMult; i++) {

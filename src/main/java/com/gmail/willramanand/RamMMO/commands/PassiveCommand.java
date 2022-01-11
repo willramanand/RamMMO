@@ -63,7 +63,7 @@ public class PassiveCommand extends SubCommand {
                 } else if (args[1].equalsIgnoreCase("foraging")) {
 
                     if (args[2].equalsIgnoreCase("haste")) {
-                        passive = Passives.FORAGING_HASTE;
+                        passive = Passives.WOODCUTTING_HASTE;
                     } else {
                         player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: haste"));
                     }
