@@ -150,7 +150,8 @@ public class EntityListener implements Listener {
             event.setDroppedExp((int) xpMult * xp);
             for (ItemStack item : droppedItems) {
                 for (int i = 0; i < dropMult; i++) {
-                    if (!(EnchantmentTarget.ARMOR.includes(item)) && !(EnchantmentTarget.TOOL.includes(item)))
+                    if (!(EnchantmentTarget.ARMOR.includes(item)) && !(EnchantmentTarget.TOOL.includes(item))
+                            && !(EnchantmentTarget.BOW.includes(item)) && !(EnchantmentTarget.WEAPON.includes(item)))
                         event.getEntity().getWorld().dropItem(entity.getLocation(), item);
                     ;
                 }

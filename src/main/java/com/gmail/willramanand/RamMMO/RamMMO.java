@@ -69,6 +69,7 @@ public class RamMMO extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EntityListener(this), this);
         Bukkit.getPluginManager().registerEvents(new HealthListener(this), this);
         Bukkit.getPluginManager().registerEvents(new ItemListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new DamageIndicatorListener(this), this);
         //Bukkit.getPluginManager().registerEvents(new BossListener(this), this);
 
         // Commands

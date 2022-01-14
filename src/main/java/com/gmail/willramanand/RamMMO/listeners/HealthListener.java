@@ -102,7 +102,7 @@ public class HealthListener implements Listener {
             if (!(player instanceof Player)) return;
             Player p = (Player) player;
 
-            if (!(event.getEntity() instanceof LivingEntity)) return;
+            if (!(event.getEntity() instanceof LivingEntity) || event.getEntity() instanceof ArmorStand) return;
             LivingEntity entity = (LivingEntity) event.getEntity();
 
             if (entity instanceof Boss || mmoBoss.isBoss((LivingEntity) event.getEntity())) return;
@@ -139,7 +139,7 @@ public class HealthListener implements Listener {
     // Make sure health display is off for entities outside of player range.
     @EventHandler
     public void onMobMove(EntityMoveEvent event) {
-        if (!(event.getEntity() instanceof LivingEntity) || event.getEntity() instanceof Boss || mmoBoss.isBoss((LivingEntity) event.getEntity()))
+        if (!(event.getEntity() instanceof LivingEntity) || event.getEntity() instanceof Boss || mmoBoss.isBoss((LivingEntity) event.getEntity()) || event.getEntity() instanceof ArmorStand)
             return;
 
         LivingEntity entity = event.getEntity();

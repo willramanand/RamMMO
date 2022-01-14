@@ -2,6 +2,7 @@ package com.gmail.willramanand.RamMMO.items;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
@@ -19,7 +20,9 @@ public class ItemManager {
             ItemStack newItem = new ItemStack(item.getBaseItem());
             ItemMeta meta = newItem.getItemMeta();
 
-            meta.displayName(item.getName().color(TextColor.color(255, 170, 0)));
+            meta.displayName(item.getName()
+                    .decoration(TextDecoration.ITALIC, false)
+                    .color(TextColor.color(255, 170, 0)));
 
             List<Component> lore = new ArrayList<>();
             for (Component cp : item.getLore() ) {
