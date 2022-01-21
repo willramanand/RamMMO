@@ -3,6 +3,7 @@ package com.gmail.willramanand.RamMMO.listeners;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.utils.IndicatorUtils;
 import com.gmail.willramanand.RamSkills.events.CriticalStrikeEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -28,7 +29,10 @@ public class DamageIndicatorListener implements Listener {
         if (event.getEntity() instanceof ArmorStand) return;
         if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION
                 || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK || event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) return;
-        IndicatorUtils.spawnArmorStand(event.getEntity().getLocation(), false ,event.getFinalDamage(), true);
+
+        if (checkVisible(event.getEntity())) {
+            IndicatorUtils.spawnArmorStand(event.getEntity().getLocation(), false, event.getFinalDamage(), true);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -49,7 +53,10 @@ public class DamageIndicatorListener implements Listener {
                 isCritMap.remove(player.getUniqueId());
             }
         }
-        IndicatorUtils.spawnArmorStand(event.getEntity().getLocation(), isCrit ,event.getFinalDamage(), true);
+
+        if (checkVisible(event.getEntity())) {
+            IndicatorUtils.spawnArmorStand(event.getEntity().getLocation(), isCrit, event.getFinalDamage(), true);
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -62,6 +69,17 @@ public class DamageIndicatorListener implements Listener {
         if (event.getEntity() instanceof ArmorStand) return;
         if (!(event.getEntity() instanceof LivingEntity)) return;
 
-        IndicatorUtils.spawnArmorStand(event.getEntity().getLocation(), false, event.getAmount(), false);
+        if (checkVisible(event.getEntity())) {
+            IndicatorUtils.spawnArmorStand(event.getEntity().getLocation(), false, event.getAmount(), false);
+        }
+    }
+
+    private boolean checkVisible(Entity entity) {
+        boolean isVisible = false;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            isVisible = player.hasLineOfSight(entity) || player == entity;
+            if (isVisible) break;
+        }
+        return isVisible;
     }
 }
