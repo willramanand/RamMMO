@@ -1,17 +1,13 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.boss.Boss;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import com.gmail.willramanand.RamMMO.utils.Formatter;
 import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -23,7 +19,6 @@ import java.util.List;
 public class HealthListener implements Listener {
 
     private final RamMMO plugin;
-    private Boss mmoBoss = new Boss();
 
     public HealthListener(RamMMO plugin) {
         this.plugin = plugin;
@@ -35,9 +30,9 @@ public class HealthListener implements Listener {
         Player player = event.getPlayer();
 
         List<Entity> from = event.getFrom().getWorld().getNearbyEntities(event.getFrom(), 5, 5, 5).stream().filter(ent -> ent instanceof LivingEntity && !(ent instanceof Boss
-                || ent instanceof Player || mmoBoss.isBoss((LivingEntity) ent) || ent instanceof ArmorStand)).toList();
+                || ent instanceof Player || ent instanceof ArmorStand)).toList();
         List<Entity> to = event.getTo().getWorld().getNearbyEntities(event.getTo(), 5, 5, 5).stream().filter(ent -> ent instanceof LivingEntity && !(ent instanceof Boss
-                || ent instanceof Player || mmoBoss.isBoss((LivingEntity) ent) || ent instanceof ArmorStand)).toList();
+                || ent instanceof Player || ent instanceof ArmorStand)).toList();
 
         to.forEach(ent -> {
             LivingEntity entity = (LivingEntity) ent;
@@ -105,7 +100,7 @@ public class HealthListener implements Listener {
             if (!(event.getEntity() instanceof LivingEntity) || event.getEntity() instanceof ArmorStand) return;
             LivingEntity entity = (LivingEntity) event.getEntity();
 
-            if (entity instanceof Boss || mmoBoss.isBoss((LivingEntity) event.getEntity())) return;
+            if (entity instanceof Boss) return;
 
             String maxHealth = Formatter.decimalFormat(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), 1);
             String currHealth = Formatter.decimalFormat((entity.getHealth() - event.getFinalDamage() < 0) ? 0 : entity.getHealth() - event.getFinalDamage(), 1);
@@ -139,7 +134,7 @@ public class HealthListener implements Listener {
     // Make sure health display is off for entities outside of player range.
     @EventHandler
     public void onMobMove(EntityMoveEvent event) {
-        if (!(event.getEntity() instanceof LivingEntity) || event.getEntity() instanceof Boss || mmoBoss.isBoss((LivingEntity) event.getEntity()) || event.getEntity() instanceof ArmorStand)
+        if (!(event.getEntity() instanceof LivingEntity) || event.getEntity() instanceof Boss || event.getEntity() instanceof ArmorStand)
             return;
 
         LivingEntity entity = event.getEntity();

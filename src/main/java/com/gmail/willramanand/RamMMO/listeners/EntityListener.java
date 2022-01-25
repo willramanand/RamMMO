@@ -1,10 +1,10 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.boss.MMOBoss;
 import com.gmail.willramanand.RamMMO.items.Item;
 import com.gmail.willramanand.RamMMO.items.ItemManager;
-import com.gmail.willramanand.RamMMO.mobs.MobConverter;
+import com.gmail.willramanand.RamMMO.mobs.MobTier;
+import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import com.gmail.willramanand.RamSkills.RamSkills;
 import com.gmail.willramanand.RamSkills.leveler.SkillLeveler;
 import com.gmail.willramanand.RamSkills.skills.Skill;
@@ -14,9 +14,12 @@ import com.gmail.willramanand.RamSkills.skills.combat.CombatSource;
 import com.gmail.willramanand.RamSkills.source.Source;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -49,18 +52,44 @@ public class EntityListener implements Listener {
     private final double BOSS_MONEY = 250.0;
 
     private final RamMMO plugin;
-    private MobConverter mobConverter;
-    private SkillLeveler skillLeveler;
     private Economy econ;
 
     public EntityListener(RamMMO plugin) {
         this.plugin = plugin;
-        econ = plugin.getEconomy();
-        mobConverter = new MobConverter(plugin);
+        econ = RamMMO.getEconomy();
     }
 
-    @EventHandler
-    public void onSpawn(CreatureSpawnEvent event) {
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void addModifier(CreatureSpawnEvent event) {
+        LivingEntity entity = event.getEntity();
+
+        int modifier = plugin.getDifficultyUtils().getDifficultyModifier();
+        if (modifier <= 0) return;
+
+        if (!(entity instanceof Monster) && !(entity instanceof Boss)) return;
+        if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NETHER_PORTAL) return;
+
+        AttributeModifier multMod = new AttributeModifier("difficulty_multiplier", modifier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+        AttributeModifier addMod = new AttributeModifier("difficulty_add", modifier, AttributeModifier.Operation.ADD_NUMBER);
+
+        if (!(entity instanceof Boss)) {
+            entity.getAttribute(Attribute.GENERIC_ARMOR).addModifier(addMod);
+            entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).addModifier(multMod);
+        } else {
+            double health = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+            double armor = entity.getAttribute(Attribute.GENERIC_ARMOR).getBaseValue();
+            double damage = entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue();
+
+            entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health * modifier);
+            entity.setHealth(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+            entity.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(armor + modifier);
+            entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(damage * modifier);
+            entity.setCustomName(entity.getName() + plugin.getDifficultyUtils().getBossStars());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onSpawnConvert(CreatureSpawnEvent event) {
         Entity entity = event.getEntity();
         Random rand = new Random();
 
@@ -70,21 +99,21 @@ public class EntityListener implements Listener {
 
         if (!(entity.getPersistentDataContainer().has(new NamespacedKey(plugin, "Rarity"), PersistentDataType.INTEGER))) {
 
-            String rarity;
+            MobTier mobTier;
             int randomInt = rand.nextInt(1001);
 
             if (randomInt >= 850 && randomInt < 950) {
-                rarity = "uncommon";
+                mobTier = MobTier.UNCOMMON;
             } else if (randomInt >= 950 && randomInt < 980) {
-                rarity = "rare";
+                mobTier = MobTier.RARE;
             } else if (randomInt >= 980 && randomInt < 999) {
-                rarity = "epic";
+                mobTier = MobTier.EPIC;
             } else if (randomInt >= 999) {
-                rarity = "legend";
+                mobTier = MobTier.LEGENDARY;
             } else {
-                rarity = "common";
+                mobTier = MobTier.COMMON;
             }
-            mobConverter.convertMob(entity, rarity);
+            convertMob(entity, mobTier);
         }
     }
 
@@ -92,6 +121,7 @@ public class EntityListener implements Listener {
     public void onDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
         int xp = event.getDroppedExp();
+        int modifier = plugin.getDifficultyUtils().getDifficultyModifier();
         List<ItemStack> droppedItems = event.getDrops();
 
         if (event.getEntity().getKiller() == null || !(plugin.isVaultActive()) || !(econ.hasAccount(event.getEntity().getKiller()))) {
@@ -105,14 +135,12 @@ public class EntityListener implements Listener {
         }
 
 
-        if (entity instanceof Boss || entity instanceof MMOBoss) {
+        if (entity instanceof Boss) {
             econ.depositPlayer(player, BOSS_MONEY);
         }
 
         if (entity.getPersistentDataContainer().has(new NamespacedKey(plugin, "Rarity"), PersistentDataType.INTEGER)) {
             int rarity = entity.getPersistentDataContainer().get(new NamespacedKey(plugin, "Rarity"), PersistentDataType.INTEGER);
-
-            ItemStack handItem = player.getInventory().getItemInMainHand();
 
             Skill skill = Skills.COMBAT;
             SkillLeveler skillLeveler = new CombatLeveler(RamSkills.getInstance());
@@ -145,6 +173,10 @@ public class EntityListener implements Listener {
                 }
             }
 
+            money *= modifier;
+            xpMult *= modifier;
+            dropMult *= modifier;
+
             econ.depositPlayer(player, money);
             RamSkills.getInstance().getLeveler().addXp(player, skill, xpMult * skillLeveler.getXp(player, source));
             event.setDroppedExp((int) xpMult * xp);
@@ -157,8 +189,32 @@ public class EntityListener implements Listener {
                 }
             }
         } else {
-            econ.depositPlayer(player, COMMON_MONEY);
+            econ.depositPlayer(player, COMMON_MONEY * modifier);
+            event.setDroppedExp(modifier * xp);
         }
+    }
+
+    private void convertMob(Entity entity, MobTier mobTier) {
+
+        if (mobTier == MobTier.COMMON) return;
+
+        LivingEntity en = (LivingEntity) entity;
+
+        // Base Values
+        double baseMoveSpeed = en.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue();
+
+        AttributeModifier healthMod = new AttributeModifier("tier_health", mobTier.getHealthMult(), AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+        AttributeModifier armorMod = new AttributeModifier("tier_armor", mobTier.getArmor(), AttributeModifier.Operation.ADD_NUMBER);
+        AttributeModifier attackMod = new AttributeModifier("tier_damage", mobTier.getDamageMult(), AttributeModifier.Operation.MULTIPLY_SCALAR_1);
+
+
+        en.getPersistentDataContainer().set(new NamespacedKey(plugin, "Rarity"), PersistentDataType.INTEGER, mobTier.getMetaValue());
+        en.getAttribute(Attribute.GENERIC_MAX_HEALTH).addModifier(healthMod);
+        en.getAttribute(Attribute.GENERIC_ARMOR).addModifier(armorMod);
+        en.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).addModifier(attackMod);
+        en.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(baseMoveSpeed * mobTier.getSpeedMult());
+        en.setHealth(en.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        en.setCustomName(ColorUtils.colorMessage(mobTier.getPrefix() + en.getName()));
     }
 
 
@@ -167,6 +223,8 @@ public class EntityListener implements Listener {
             if (!(event.getEntity() instanceof EnderDragon)) {
                 return;
             }
+
+            plugin.getDifficultyUtils().addDefeat();
 
             int rng = new Random().nextInt(101);
             if (rng >= 80) {

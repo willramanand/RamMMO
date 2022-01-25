@@ -1,6 +1,8 @@
 com\gmail\willramanand\RamMMO\listeners\DamageIndicatorListener.class
 com\gmail\willramanand\RamMMO\config\ConfigManager.class
+com\gmail\willramanand\RamMMO\mobs\MobTier.class
 com\gmail\willramanand\RamMMO\utils\IndicatorUtils.class
+com\gmail\willramanand\RamMMO\utils\DifficultyUtils.class
 com\gmail\willramanand\RamMMO\boss\IBoss.class
 com\gmail\willramanand\RamMMO\commands\Commands.class
 com\gmail\willramanand\RamMMO\boss\Boss.class

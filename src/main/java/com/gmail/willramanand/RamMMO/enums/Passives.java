@@ -7,7 +7,6 @@ public enum Passives implements Passive {
     WOODCUTTING_HASTE("woodcutting", "haste", PotionEffectType.FAST_DIGGING),
     EXCAVATION_HASTE("excavation", "haste", PotionEffectType.FAST_DIGGING),
     AGILITY_JUMP_BOOST("agility", "jump_boost", PotionEffectType.JUMP),
-    AGILITY_SPEED("agility", "speed", PotionEffectType.SPEED),
     FISHING_CONDUIT_POWER("fishing", "conduit_power", PotionEffectType.CONDUIT_POWER),
     FISHING_DOLPHINS_GRACE("fishing", "dolphins_grace", PotionEffectType.DOLPHINS_GRACE);
 

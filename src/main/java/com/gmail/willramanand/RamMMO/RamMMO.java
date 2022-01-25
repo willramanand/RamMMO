@@ -7,6 +7,7 @@ import com.gmail.willramanand.RamMMO.items.recipe.RecipeManager;
 import com.gmail.willramanand.RamMMO.listeners.*;
 import com.gmail.willramanand.RamMMO.player.PlayerManager;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import com.gmail.willramanand.RamMMO.utils.DifficultyUtils;
 import com.gmail.willramanand.RamMMO.utils.EffectChecker;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
@@ -27,6 +28,7 @@ public class RamMMO extends JavaPlugin {
     private EffectChecker effectChecker;
     private ConfigManager configManager;
     private PlayerManager playerManager;
+    private DifficultyUtils difficultyUtils;
     private static Economy econ = null;
     private static Permission perms = null;
     private static Chat chat = null;
@@ -53,10 +55,12 @@ public class RamMMO extends JavaPlugin {
         effectChecker = new EffectChecker(this);
         configManager = new ConfigManager(this);
         playerManager = new PlayerManager(this);
+        difficultyUtils = new DifficultyUtils(this);
 
         // Config
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
+        difficultyUtils.load();
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (!playerManager.hasPlayerData(p)) {
@@ -96,7 +100,7 @@ public class RamMMO extends JavaPlugin {
     public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers())
             configManager.save(player, true);
-
+        difficultyUtils.save();
         log.info("Disabled");
     }
 
@@ -127,6 +131,8 @@ public class RamMMO extends JavaPlugin {
     public PlayerManager getPlayerManager() {
         return playerManager;
     }
+
+    public DifficultyUtils getDifficultyUtils() { return difficultyUtils; }
 
     private boolean setupEconomy() {
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);

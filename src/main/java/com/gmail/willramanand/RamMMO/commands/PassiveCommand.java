@@ -34,12 +34,10 @@ public class PassiveCommand extends SubCommand {
         if (args.length == 3) {
             try {
                 if (args[1].equalsIgnoreCase("agility")) {
-                    if (args[2].equalsIgnoreCase("speed")) {
-                        passive = Passives.AGILITY_SPEED;
-                    } else if (args[2].equalsIgnoreCase("jump_boost")) {
+                    if (args[2].equalsIgnoreCase("jump_boost")) {
                         passive = Passives.AGILITY_JUMP_BOOST;
                     } else {
-                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: speed, jump_boost"));
+                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: jump_boost"));
                     }
 
                 } else if (args[1].equalsIgnoreCase("fishing")) {

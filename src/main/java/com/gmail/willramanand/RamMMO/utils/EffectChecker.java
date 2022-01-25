@@ -69,14 +69,6 @@ public class EffectChecker {
 
     private void checkAgility(MMOPlayer mmoPlayer) {
         int agilityLvl = skillsPlayerManager.getPlayerData(mmoPlayer.getPlayer()).getSkillLevel(Skills.AGILITY);
-        if (mmoPlayer.getPassives(Passives.AGILITY_SPEED)) {
-            if (agilityLvl >= 10 && agilityLvl < 30) {
-                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 0));
-            } else if (agilityLvl >= 30) {
-                mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20, 1));
-            }
-        }
-
         if (mmoPlayer.getPassives(Passives.AGILITY_JUMP_BOOST)) {
 
             if (agilityLvl >= 20 && agilityLvl < 40) {

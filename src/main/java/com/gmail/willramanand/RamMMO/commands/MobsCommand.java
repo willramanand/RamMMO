@@ -17,6 +17,7 @@ public class MobsCommand extends SubCommand {
 
     @Override
     public void onCommand(Player player, String[] args) {
+        player.sendMessage(ColorUtils.colorMessage("&eCurrent Global Difficulty modifier: &d" + plugin.getDifficultyUtils().getDifficultyModifier()));
         player.sendMessage(ColorUtils.colorMessage("&eMobs can now spawn at &d5 &edifferent tiers within the wild!"));
         player.sendMessage(ColorUtils.colorMessage("&fCommon Mobs: &eThese are your standard mobs."));
         player.sendMessage(ColorUtils.colorMessage("&2Uncommon Mobs: &a+50% &espeed, &a2x &edamage, &a2x &ehealth."));
