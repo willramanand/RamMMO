@@ -121,7 +121,7 @@ public class EntityListener implements Listener {
     public void onDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
         int xp = event.getDroppedExp();
-        int modifier = plugin.getDifficultyUtils().getDifficultyModifier();
+        int modifier = 1 + plugin.getDifficultyUtils().getDifficultyModifier();
         List<ItemStack> droppedItems = event.getDrops();
 
         if (event.getEntity().getKiller() == null || !(plugin.isVaultActive()) || !(econ.hasAccount(event.getEntity().getKiller()))) {
