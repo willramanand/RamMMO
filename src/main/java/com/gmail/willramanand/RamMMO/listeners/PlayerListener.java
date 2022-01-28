@@ -37,14 +37,8 @@ public class PlayerListener implements Listener {
         int lvl = event.getSkillLvl();
 
         // Agility
-        if (skill == Skills.AGILITY && lvl == 10) {
-            player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked &dSpeed &epassive effect."));
-            player.sendMessage(ColorUtils.colorMessage("&eReach level &a20&e to unlock &dJump Boost&e."));
-        } else if (skill == Skills.AGILITY && lvl == 20) {
+        if (skill == Skills.AGILITY && lvl == 20) {
             player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked &dJump Boost &epassive effect."));
-            player.sendMessage(ColorUtils.colorMessage("&eReach level &a30&e to unlock &dSpeed II&e."));
-        } else if (skill == Skills.AGILITY && lvl == 30) {
-            player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked &dSpeed II &epassive effect."));
             player.sendMessage(ColorUtils.colorMessage("&eReach level &a40&e to unlock &dJump Boost II&e."));
         } else if (skill == Skills.AGILITY && lvl == 40) {
             player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked &dJump Boost II &epassive effect."));

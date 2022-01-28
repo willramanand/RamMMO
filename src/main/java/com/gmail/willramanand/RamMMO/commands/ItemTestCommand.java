@@ -1,7 +1,7 @@
 package com.gmail.willramanand.RamMMO.commands;
 
-import com.gmail.willramanand.RamMMO.items.Item;
-import com.gmail.willramanand.RamMMO.items.ItemManager;
+import com.gmail.willramanand.RamMMO.item.Item;
+import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import org.bukkit.entity.Player;
 

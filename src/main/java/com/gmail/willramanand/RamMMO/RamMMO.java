@@ -2,8 +2,7 @@ package com.gmail.willramanand.RamMMO;
 
 import com.gmail.willramanand.RamMMO.commands.CommandManager;
 import com.gmail.willramanand.RamMMO.config.ConfigManager;
-import com.gmail.willramanand.RamMMO.items.ItemManager;
-import com.gmail.willramanand.RamMMO.items.recipe.RecipeManager;
+import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.listeners.*;
 import com.gmail.willramanand.RamMMO.player.PlayerManager;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
@@ -62,6 +61,9 @@ public class RamMMO extends JavaPlugin {
         this.saveConfig();
         difficultyUtils.load();
 
+        // Custom Items
+        ItemManager.registerItems();
+
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (!playerManager.hasPlayerData(p)) {
                 configManager.load(p);
@@ -74,15 +76,11 @@ public class RamMMO extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new HealthListener(this), this);
         Bukkit.getPluginManager().registerEvents(new ItemListener(this), this);
         Bukkit.getPluginManager().registerEvents(new DamageIndicatorListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new VersionListener(this), this);
         //Bukkit.getPluginManager().registerEvents(new BossListener(this), this);
 
         // Commands
         commandManager.setup();
-
-        // Custom Items
-        ItemManager.createItems();
-        RecipeManager.createRecipes(this);
-
 
         new BukkitRunnable() {
             public void run() {

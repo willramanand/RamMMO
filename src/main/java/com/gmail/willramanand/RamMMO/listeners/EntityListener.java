@@ -1,8 +1,8 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.items.Item;
-import com.gmail.willramanand.RamMMO.items.ItemManager;
+import com.gmail.willramanand.RamMMO.item.Item;
+import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.mobs.MobTier;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import com.gmail.willramanand.RamSkills.RamSkills;
