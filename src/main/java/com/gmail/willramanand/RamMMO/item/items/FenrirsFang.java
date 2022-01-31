@@ -72,7 +72,7 @@ public class FenrirsFang extends BaseItem {
 
     @Override
     public void setRecipe() {
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(RamMMO.getInstance(), "fenrir_fang"), itemStack);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(RamMMO.getInstance(), item.getRecipeKey()), itemStack);
         shapedRecipe.shape(" f ", "nsn", " e ");
         shapedRecipe.setIngredient('e', ItemManager.getItem(Item.ENCHANTED_EMERALD));
         shapedRecipe.setIngredient('n', ItemManager.getItem(Item.ENCHANTED_NETHERITE));

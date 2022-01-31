@@ -12,7 +12,8 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -79,9 +80,9 @@ public class NetherfireLegs extends BaseItem {
 
     @Override
     public void setRecipe() {
-        ShapelessRecipe newRecipe = new ShapelessRecipe(new NamespacedKey(RamMMO.getInstance(), "netherfire_legs"), itemStack);
-        newRecipe.addIngredient(ItemManager.getItem(Item.FIERY_SCALE));
-        newRecipe.addIngredient(Material.NETHERITE_LEGGINGS);
+        SmithingRecipe newRecipe;
+        newRecipe = new SmithingRecipe(new NamespacedKey(RamMMO.getInstance(), item.getRecipeKey()), itemStack,
+                new RecipeChoice.MaterialChoice(Material.NETHERITE_LEGGINGS), new RecipeChoice.ExactChoice(ItemManager.getItem(Item.FIERY_SCALE)), false);
         recipe = newRecipe;
     }
 }

@@ -9,22 +9,23 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.SmithingRecipe;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NetherfireChest extends BaseItem {
+public class BuilderWand extends BaseItem {
 
-    public NetherfireChest() {
-        super(Item.NETHERFIRE_CHEST, Material.NETHERITE_CHESTPLATE, ItemRarity.MYTHICAL, Item.NETHERFIRE_CHEST.version());
+    public BuilderWand() {
+        super(Item.BUILDERS_WAND, Material.BLAZE_ROD, ItemRarity.MYTHICAL, Item.BUILDERS_WAND.version());
     }
 
     @Override
     public void setAttributes() {
+
     }
 
     @Override
@@ -35,9 +36,8 @@ public class NetherfireChest extends BaseItem {
 
         List<Component> lore = new ArrayList<>();
         lore.add(Component.text(""));
-        lore.add(Component.text("Grants immunity to fire").decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Set Bonus: -5% Damage Taken").decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("").decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("YES WE CAN!").decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text(""));
         lore.add(rarity.rarity());
 
         meta.lore(lore);
@@ -50,6 +50,7 @@ public class NetherfireChest extends BaseItem {
         ItemMeta meta = itemStack.getItemMeta();
 
         meta.addEnchant(Enchantment.DURABILITY, 5, true);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         itemStack.setItemMeta(meta);
     }
@@ -59,17 +60,19 @@ public class NetherfireChest extends BaseItem {
         ItemMeta meta = itemStack.getItemMeta();
 
         meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), item.getClassName()), PersistentDataType.INTEGER, version);
-        meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), "fire_immunity"), PersistentDataType.INTEGER, 1);
-        meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), "reduced_dmg_set"), PersistentDataType.INTEGER, 1);
 
         itemStack.setItemMeta(meta);
     }
 
     @Override
     public void setRecipe() {
-        SmithingRecipe newRecipe;
-        newRecipe = new SmithingRecipe(new NamespacedKey(RamMMO.getInstance(), item.getRecipeKey()), itemStack,
-                new RecipeChoice.MaterialChoice(Material.NETHERITE_CHESTPLATE), new RecipeChoice.ExactChoice(ItemManager.getItem(Item.FIERY_SCALE)), false);
-        recipe = newRecipe;
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(RamMMO.getInstance(), item.getRecipeKey()), itemStack);
+        shapedRecipe.shape(" n ",
+                            " g ",
+                            " g ");
+
+        shapedRecipe.setIngredient('g', ItemManager.getItem(Item.ENCHANTED_NETHERSTAR));
+        shapedRecipe.setIngredient('n', ItemManager.getItem(Item.ENCHANTED_NETHERITE));
+        recipe = shapedRecipe;
     }
 }

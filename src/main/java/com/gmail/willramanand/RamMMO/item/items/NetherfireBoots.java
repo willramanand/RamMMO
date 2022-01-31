@@ -8,17 +8,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class NetherfireBoots extends BaseItem {
 
@@ -70,9 +67,9 @@ public class NetherfireBoots extends BaseItem {
 
     @Override
     public void setRecipe() {
-        ShapelessRecipe newRecipe = new ShapelessRecipe(new NamespacedKey(RamMMO.getInstance(), "netherfire_boots"), itemStack);
-        newRecipe.addIngredient(ItemManager.getItem(Item.FIERY_SCALE));
-        newRecipe.addIngredient(Material.NETHERITE_BOOTS);
+        SmithingRecipe newRecipe;
+        newRecipe = new SmithingRecipe(new NamespacedKey(RamMMO.getInstance(), item.getRecipeKey()), itemStack,
+                new RecipeChoice.MaterialChoice(Material.NETHERITE_BOOTS), new RecipeChoice.ExactChoice(ItemManager.getItem(Item.FIERY_SCALE)), false);
         recipe = newRecipe;
     }
 }

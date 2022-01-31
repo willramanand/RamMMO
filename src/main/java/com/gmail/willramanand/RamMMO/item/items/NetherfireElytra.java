@@ -4,7 +4,6 @@ import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.item.Item;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.item.ItemRarity;
-import com.gmail.willramanand.RamMMO.item.items.BaseItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -64,6 +63,7 @@ public class NetherfireElytra extends BaseItem {
     public void setEnchantments() {
         ItemMeta meta = itemStack.getItemMeta();
 
+        meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 4, true);
         meta.addEnchant(Enchantment.DURABILITY, 5, true);
 
         itemStack.setItemMeta(meta);
@@ -76,6 +76,7 @@ public class NetherfireElytra extends BaseItem {
         meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), item.getClassName()), PersistentDataType.INTEGER, version);
         meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), "infinite_flight"), PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), "fire_immunity"), PersistentDataType.INTEGER, 1);
+        meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), "cannot_burn"), PersistentDataType.INTEGER, 1);
         meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), "reduced_dmg_set"), PersistentDataType.INTEGER, 1);
 
         itemStack.setItemMeta(meta);
@@ -83,7 +84,7 @@ public class NetherfireElytra extends BaseItem {
 
     @Override
     public void setRecipe() {
-        ShapelessRecipe newRecipe = new ShapelessRecipe(new NamespacedKey(RamMMO.getInstance(), "netherfire_elytra"), itemStack);
+        ShapelessRecipe newRecipe = new ShapelessRecipe(new NamespacedKey(RamMMO.getInstance(), item.getRecipeKey()), itemStack);
         newRecipe.addIngredient(ItemManager.getItem(Item.NETHERFIRE_CHEST));
         newRecipe.addIngredient(ItemManager.getItem(Item.EMPOWERED_ELYTRA));
         recipe = newRecipe;

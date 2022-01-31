@@ -63,7 +63,7 @@ public class EnchantedGold extends BaseItem {
 
     @Override
     public void setRecipe() {
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(RamMMO.getInstance(), "enchanted_gold"), itemStack);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(RamMMO.getInstance(), item.getRecipeKey()), itemStack);
         shapedRecipe.shape(" g ", "ggg", " g ");
         shapedRecipe.setIngredient('g', Material.GOLD_INGOT);
         recipe = shapedRecipe;

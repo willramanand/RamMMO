@@ -59,6 +59,7 @@ public class FieryScale extends BaseItem {
         ItemMeta meta = itemStack.getItemMeta();
 
         meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), item.getClassName()), PersistentDataType.INTEGER, version);
+        meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), "cannot_burn"), PersistentDataType.INTEGER, 1);
         itemStack.setItemMeta(meta);
     }
 

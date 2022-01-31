@@ -12,7 +12,9 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class DamageIndicatorListener implements Listener {
 
@@ -26,7 +28,10 @@ public class DamageIndicatorListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void showDamageByNonEntity(EntityDamageEvent event) {
+        if (event.isCancelled()) return;
         if (event.getEntity() instanceof ArmorStand) return;
+        if (event.getEntity().getType() == EntityType.DROPPED_ITEM) return;
+
         if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION
                 || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK || event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) return;
 
@@ -37,6 +42,7 @@ public class DamageIndicatorListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void showEntityDamage(EntityDamageByEntityEvent event) {
+        if (event.isCancelled()) return;
         if (event.getEntity() instanceof ArmorStand) return;
 
         boolean isCrit = false;

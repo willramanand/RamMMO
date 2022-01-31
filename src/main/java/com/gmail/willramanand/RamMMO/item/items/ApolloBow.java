@@ -4,7 +4,6 @@ import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.item.Item;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.item.ItemRarity;
-import com.gmail.willramanand.RamMMO.item.items.BaseItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -62,12 +61,13 @@ public class ApolloBow extends BaseItem {
         ItemMeta meta = itemStack.getItemMeta();
 
         meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), item.getClassName()), PersistentDataType.INTEGER, version);
+        meta.getPersistentDataContainer().set(new NamespacedKey(RamMMO.getInstance(), "cannot_burn"), PersistentDataType.INTEGER, 1);
         itemStack.setItemMeta(meta);
     }
 
     @Override
     public void setRecipe() {
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(RamMMO.getInstance(), "apollo_bow"), itemStack);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(RamMMO.getInstance(), item.getRecipeKey()), itemStack);
         shapedRecipe.shape("dn ", "dsn", "dn ");
         shapedRecipe.setIngredient('d', ItemManager.getItem(Item.ENCHANTED_DIAMOND));
         shapedRecipe.setIngredient('n', ItemManager.getItem(Item.ENCHANTED_NETHERITE));

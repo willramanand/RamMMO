@@ -29,7 +29,7 @@ public class DifficultyUtils {
     }
 
     private void broadcastDefeat() {
-        Component compOne = Component.text("The EnderDragon has been defeated! ").color(TextColor.color(255, 170, 0));
+        Component compOne = Component.text("The Ender Dragon has been defeated! ").color(TextColor.color(255, 170, 0));
         Component compTwo = Component.text("The world grows harder!").color(TextColor.color(170, 0, 0)).decorate(TextDecoration.BOLD);
         compOne = compOne.append(compTwo);
         Bukkit.broadcast(compOne);
@@ -47,7 +47,7 @@ public class DifficultyUtils {
     public String getBossStars() {
         String bossStars = " ";
         for (int i = 0; i < enderDragonDefeats; i++) {
-            bossStars += "✫";
+            bossStars += "★";
         }
         return bossStars;
     }

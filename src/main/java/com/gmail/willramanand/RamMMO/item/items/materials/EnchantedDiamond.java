@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.checkerframework.checker.units.qual.N;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +63,7 @@ public class EnchantedDiamond extends BaseItem {
 
     @Override
     public void setRecipe() {
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(RamMMO.getInstance(), "enchanted_diamond"), itemStack);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(RamMMO.getInstance(), item.getRecipeKey()), itemStack);
         shapedRecipe.shape(" d ", "ddd", " d ");
 
         shapedRecipe.setIngredient('d', Material.DIAMOND);

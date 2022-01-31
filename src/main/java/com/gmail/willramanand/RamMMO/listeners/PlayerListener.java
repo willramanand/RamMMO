@@ -1,10 +1,13 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.item.Item;
+import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import com.gmail.willramanand.RamSkills.events.SkillLevelUpEvent;
 import com.gmail.willramanand.RamSkills.skills.Skill;
 import com.gmail.willramanand.RamSkills.skills.Skills;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +25,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void join(PlayerLoginEvent event) {
         plugin.getConfigManager().load(event.getPlayer());
+        getRecipes(event.getPlayer());
     }
 
     @EventHandler
@@ -85,6 +89,16 @@ public class PlayerListener implements Listener {
         } else if (skill == Skills.WOODCUTTING && lvl == 20) {
             player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked &dHaste II &epassive effect."));
             player.sendMessage(ColorUtils.colorMessage("&eYou have unlocked all additional passive effects for &dWoodcutting&e."));
+        }
+    }
+
+
+    public void getRecipes(Player player) {
+        for (Item item : Item.values()) {
+            player.discoverRecipe(new NamespacedKey(plugin, item.getRecipeKey()));
+        }
+        for (String key : ItemManager.getExtraRecipes()) {
+            player.discoverRecipe(new NamespacedKey(plugin, key));
         }
     }
 }

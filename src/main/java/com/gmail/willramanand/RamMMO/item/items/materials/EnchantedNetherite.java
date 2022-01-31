@@ -61,7 +61,7 @@ public class EnchantedNetherite extends BaseItem {
 
     @Override
     public void setRecipe() {
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(RamMMO.getInstance(), "enchanted_netherite"), itemStack);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(RamMMO.getInstance(), item.getRecipeKey()), itemStack);
         shapedRecipe.shape(" n ", "nnn", " n ");
 
         shapedRecipe.setIngredient('n', Material.NETHERITE_INGOT);

@@ -63,6 +63,7 @@ public class RamMMO extends JavaPlugin {
 
         // Custom Items
         ItemManager.registerItems();
+        ItemManager.buildExtraRecipes();
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (!playerManager.hasPlayerData(p)) {
@@ -77,6 +78,7 @@ public class RamMMO extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ItemListener(this), this);
         Bukkit.getPluginManager().registerEvents(new DamageIndicatorListener(this), this);
         Bukkit.getPluginManager().registerEvents(new VersionListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new CraftingListener(this), this);
         //Bukkit.getPluginManager().registerEvents(new BossListener(this), this);
 
         // Commands

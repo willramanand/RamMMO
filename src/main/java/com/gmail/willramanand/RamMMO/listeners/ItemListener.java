@@ -1,33 +1,50 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.utils.BuilderWandUtils;
+import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import com.gmail.willramanand.RamSkills.RamSkills;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ItemListener implements Listener {
 
     private final RamMMO plugin;
+    private final Set<Player> wandPaused;
+    private final Set<Player> downpourPaused;
 
     public ItemListener(RamMMO plugin) {
         this.plugin = plugin;
+        this.wandPaused = new HashSet<>();
+        this.downpourPaused = new HashSet<>();
     }
 
     @EventHandler
@@ -35,7 +52,7 @@ public class ItemListener implements Listener {
         if (!(event.getEntity() instanceof Player)) {
             return;
         }
-        if (event.getCause() != EntityDamageEvent.DamageCause.FALL) return;
+        if (event.getCause() != EntityDamageEvent.DamageCause.FALL && event.getCause() != EntityDamageEvent.DamageCause.FLY_INTO_WALL) return;
 
         Player player = (Player) event.getEntity();
         for (ItemStack item : player.getInventory().getArmorContents()) {
@@ -82,7 +99,6 @@ public class ItemListener implements Listener {
             return;
         }
         Player player = (Player) event.getEntity();
-
         for (ItemStack item : player.getInventory().getArmorContents()) {
             if (item != null && item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "fire_immunity")) && isFireEffect(event.getCause())) {
                 player.setFireTicks(0);
@@ -141,6 +157,13 @@ public class ItemListener implements Listener {
     }
 
     @EventHandler
+    public void cannotPlace(BlockPlaceEvent event) {
+        if (!(event.getItemInHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "cannot_place")))) return;
+        event.setCancelled(true);
+        event.getPlayer().sendMessage(ColorUtils.colorMessage("&4This item cannot be placed!"));
+    }
+
+    @EventHandler
     public void apolloBow(ProjectileLaunchEvent event) {
         if (!(event.getEntity() instanceof AbstractArrow)) return;
         if (!(event.getEntity().getShooter() instanceof Player)) return;
@@ -152,14 +175,166 @@ public class ItemListener implements Listener {
         }
     }
 
-    private boolean isFireEffect(EntityDamageEvent.DamageCause cause) {
-        List<EntityDamageEvent.DamageCause> fireDamage = new ArrayList<>();
-        fireDamage.add(EntityDamageEvent.DamageCause.FIRE);
-        fireDamage.add(EntityDamageEvent.DamageCause.FIRE_TICK);
-        fireDamage.add(EntityDamageEvent.DamageCause.LAVA);
-        fireDamage.add(EntityDamageEvent.DamageCause.HOT_FLOOR);
+    @EventHandler
+    public void preventBurning(EntityDamageEvent event) {
+        if (event.getEntity().getType() != EntityType.DROPPED_ITEM) return;
 
-        return fireDamage.contains(cause);
+        Item item = (Item) event.getEntity();
+        ItemStack itemStack = item.getItemStack();
+
+        if (itemStack.getItemMeta() != null && itemStack.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "cannot_burn"))) {
+            event.setCancelled(true);
+        }
     }
 
-}
+    @EventHandler
+    public void instaBreak(BlockDamageEvent event) {
+        if (event.getPlayer().getInventory().getItemInMainHand() == null || event.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null || !(event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "insta_break"))))
+            return;
+        if (!(Tag.MINEABLE_PICKAXE.isTagged(event.getBlock().getType()))) return;
+        event.setInstaBreak(true);
+    }
+
+    @EventHandler
+    public void builderWand(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        if (event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+
+        if (player.getInventory().getItemInMainHand() == null) return;
+
+        if (wandPaused.contains(player)) {
+            RamSkills.getInstance().getActionBar().sendAbilityActionBar(player, "&4Wand on Cooldown!");
+            return;
+        }
+
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
+        if (itemStack.getItemMeta() == null || !(itemStack.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "builderwand")))) return;
+
+        Block block = event.getClickedBlock();
+        if (block == null || block.getType() == Material.AIR) {
+            return;
+        }
+
+        BlockFace face = BuilderWandUtils.getBlockFace(player);
+        if (face == null) {
+            face = event.getBlockFace();
+        }
+        Material blockType = block.getType();
+
+        ItemStack cost = new ItemStack(blockType, 1);
+        for (Location location : BuilderWandUtils.getValidLocations(block.getLocation().add(face.getModX(), face.getModY(), face.getModZ()), face, blockType)) {
+            if (player.getLocation().getBlock().getLocation().equals(location) || player.getLocation().add(0, 1, 0).getBlock().getLocation().equals(location)) {
+                continue;
+            }
+            if (!BuilderWandUtils.getReplaceables().contains(location.getBlock().getType())) {
+                continue;
+            }
+
+            boolean hasItem = true;
+            if (player.getGameMode() == GameMode.CREATIVE || player.getInventory().containsAtLeast(cost, 1)) {
+                hasItem = player.getGameMode() != GameMode.CREATIVE;
+            } else {
+                continue;
+            }
+            BlockState state = location.getBlock().getState();
+            state.setType(blockType);
+            BlockPlaceEvent buildEvent = new BlockPlaceEvent(location.getBlock(), state, location.getBlock().getRelative(face.getOppositeFace()), cost, player, true, EquipmentSlot.HAND);
+            Bukkit.getPluginManager().callEvent(buildEvent);
+
+            if (buildEvent.isCancelled()) {
+                continue;
+            }
+
+            if (hasItem) {
+                player.getInventory().removeItem(cost);
+            }
+            state.update(true);
+        }
+        setWandPaused(player, 10);
+    }
+
+    @EventHandler
+    public void strikeLightning(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player)) return;
+        Player player = (Player) event.getDamager();
+        if (player.getInventory().getItemInMainHand() == null) return;
+        if (player.getInventory().getItemInMainHand().getItemMeta() == null
+                || !(player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "strike_lightning")))) return;
+
+        player.getWorld().strikeLightning(event.getEntity().getLocation());
+    }
+
+    @EventHandler
+    public void preventLightningDamage(EntityDamageEvent event) {
+        if (event.getCause() != EntityDamageEvent.DamageCause.LIGHTNING) return;
+        if (!(event.getEntity() instanceof Player)) return;
+        Player player = (Player) event.getEntity();
+        if (player.getInventory().getItemInMainHand() == null) return;
+        if (player.getInventory().getItemInMainHand().getItemMeta() == null
+                || !(player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "strike_lightning")))) return;
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void downPour(PlayerInteractEvent event) {
+        if (!(event.getAction().isLeftClick())) return;
+        if (event.getPlayer().getInventory().getItemInMainHand() == null) return;
+        if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null
+                || !(event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "downpour")))) return;
+
+        Player player = event.getPlayer();
+
+
+        if (downpourPaused.contains(player)) {
+            RamSkills.getInstance().getActionBar().sendAbilityActionBar(player, "&4On Cooldown!");
+            return;
+        }
+
+        if (player.getWorld().isClearWeather()) {
+            player.getWorld().setStorm(true);
+            player.getWorld().setThundering(true);
+        } else {
+            player.getWorld().setStorm(false);
+            player.getWorld().setThundering(false);
+        }
+        setDownpourPaused(player, 600);
+    }
+
+    public void setWandPaused(Player player, int ticks) {
+        wandPaused.add(player);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                wandPaused.remove(player);
+            }
+        }.runTaskLater(plugin, ticks);
+    }
+
+    public void setDownpourPaused(Player player, int ticks) {
+        downpourPaused.add(player);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                downpourPaused.remove(player);
+            }
+        }.runTaskLater(plugin, ticks);
+    }
+
+        private boolean isFireEffect (EntityDamageEvent.DamageCause cause){
+            List<EntityDamageEvent.DamageCause> fireDamage = new ArrayList<>();
+            fireDamage.add(EntityDamageEvent.DamageCause.FIRE);
+            fireDamage.add(EntityDamageEvent.DamageCause.FIRE_TICK);
+            fireDamage.add(EntityDamageEvent.DamageCause.LAVA);
+            fireDamage.add(EntityDamageEvent.DamageCause.HOT_FLOOR);
+
+            return fireDamage.contains(cause);
+        }
+
+    }

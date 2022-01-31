@@ -4,13 +4,13 @@ import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.item.Item;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.item.ItemRarity;
-import com.gmail.willramanand.RamMMO.item.items.BaseItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.SmithingRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -66,9 +66,9 @@ public class EmpoweredElytra extends BaseItem {
 
     @Override
     public void setRecipe() {
-        ShapelessRecipe newRecipe = new ShapelessRecipe(new NamespacedKey(RamMMO.getInstance(), "empowered_elytra"), itemStack);
-        newRecipe.addIngredient(Material.ELYTRA);
-        newRecipe.addIngredient(ItemManager.getItem(Item.PHANTOM_PLATE));
+        SmithingRecipe newRecipe;
+        newRecipe = new SmithingRecipe(new NamespacedKey(RamMMO.getInstance(), item.getRecipeKey()), itemStack,
+                new RecipeChoice.MaterialChoice(Material.ELYTRA), new RecipeChoice.ExactChoice(ItemManager.getItem(Item.PHANTOM_PLATE)), false);
         recipe = newRecipe;
     }
 }

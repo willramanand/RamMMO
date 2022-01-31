@@ -1,7 +1,7 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.boss.Boss;
+import com.gmail.willramanand.RamMMO.utils.BossUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -22,7 +22,6 @@ import java.util.List;
 public class BossListener implements Listener {
 
     private RamMMO plugin;
-    private final Boss mmoBoss = new Boss();
 
     public BossListener(RamMMO plugin) {
         this.plugin = plugin;
@@ -33,10 +32,10 @@ public class BossListener implements Listener {
 
         LivingEntity boss = event.getEntity();
 
-        if (!(mmoBoss.isBoss(boss))) return;
+        if (!(BossUtils.isBoss(boss))) return;
 
         for (LivingEntity ent : boss.getLocation().getWorld().getLivingEntities()) {
-            if (mmoBoss.isBoss(ent) && ent != boss) {
+            if (BossUtils.isBoss(ent) && ent != boss) {
                 ent.remove();
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     player.sendMessage(ColorUtils.colorMessage(String.format("%s &6has gone into hiding!", ent.getCustomName())));
@@ -54,31 +53,29 @@ public class BossListener implements Listener {
 
     @EventHandler
     public void onFireBoss(EntityDamageEvent event) {
-        if (!(mmoBoss.isBoss((LivingEntity) event.getEntity()))) return;
+        if (!(BossUtils.isBoss((LivingEntity) event.getEntity()))) return;
 
         if (isFireEffect(event.getCause())) {
-            event.setDamage(0);
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void removeDamagingEffect(EntityDamageEvent event) {
-        if (!(mmoBoss.isBoss((LivingEntity) event.getEntity()))) return;
+        if (!(BossUtils.isBoss((LivingEntity) event.getEntity()))) return;
 
         List<EntityDamageEvent.DamageCause> potionDamage = new ArrayList<>();
         potionDamage.add(EntityDamageEvent.DamageCause.POISON);
         potionDamage.add(EntityDamageEvent.DamageCause.WITHER);
         potionDamage.add(EntityDamageEvent.DamageCause.DRAGON_BREATH);
         if (potionDamage.contains(event.getCause())) {
-            event.setDamage(0);
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBossDeath(EntityDeathEvent event) {
-        if (!(mmoBoss.isBoss((LivingEntity) event.getEntity()))) return;
+        if (!(BossUtils.isBoss(event.getEntity()))) return;
 
         LivingEntity boss = event.getEntity();
 
