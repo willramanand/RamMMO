@@ -1,10 +1,11 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.utils.BossUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import com.gmail.willramanand.RamMMO.utils.DataUtils;
 import com.gmail.willramanand.RamMMO.utils.Formatter;
 import io.papermc.paper.event.entity.EntityMoveEvent;
-import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -28,8 +29,8 @@ public class HealthListener implements Listener {
 
         Player player = event.getPlayer();
 
-        List<Entity> from = event.getFrom().getWorld().getNearbyEntities(event.getFrom(), 5, 5, 5).stream().filter(ent -> ent instanceof LivingEntity && !(ent instanceof Boss || ent instanceof Player || ent instanceof ArmorStand)).toList();
-        List<Entity> to = event.getTo().getWorld().getNearbyEntities(event.getTo(), 5, 5, 5).stream().filter(ent -> ent instanceof LivingEntity && !(ent instanceof Boss || ent instanceof Player || ent instanceof ArmorStand)).toList();
+        List<Entity> from = event.getFrom().getWorld().getNearbyEntities(event.getFrom(), 5, 5, 5).stream().filter(ent -> ent instanceof LivingEntity && !(ent instanceof Boss || ent instanceof Player || ent instanceof ArmorStand || BossUtils.isBoss((LivingEntity) ent))).toList();
+        List<Entity> to = event.getTo().getWorld().getNearbyEntities(event.getTo(), 5, 5, 5).stream().filter(ent -> ent instanceof LivingEntity && !(ent instanceof Boss || ent instanceof Player || ent instanceof ArmorStand || BossUtils.isBoss((LivingEntity) ent))).toList();
 
         to.forEach(ent -> {
             LivingEntity entity = (LivingEntity) ent;
@@ -37,7 +38,7 @@ public class HealthListener implements Listener {
             String maxHealth = Formatter.decimalFormat(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), 1);
             String currHealth = Formatter.decimalFormat(entity.getHealth(), 1);
             String mobName = Formatter.nameFormat(entity.getType().name());
-            String nickContain = entity.getPersistentDataContainer().get(new NamespacedKey(plugin, "Nickname"), PersistentDataType.STRING);
+            String nickContain = DataUtils.get(entity, "Nickname", PersistentDataType.STRING);
 
 
             if ((entity.getName().equalsIgnoreCase(mobName) || entity.getName().contains("❤")) && player.hasLineOfSight(entity)) {
@@ -53,7 +54,7 @@ public class HealthListener implements Listener {
                     if (entity.getName().contains("☠")) {
                         return;
                     }
-                    entity.getPersistentDataContainer().set(new NamespacedKey(plugin, "Nickname"), PersistentDataType.STRING, entity.getName());
+                    DataUtils.set(entity, "Nickname", PersistentDataType.STRING, entity.getName());
 
                     if (nickContain != null && player.hasLineOfSight(entity)) {
                         mobName = nickContain;
@@ -76,7 +77,7 @@ public class HealthListener implements Listener {
                 entity.setCustomName(null);
                 entity.setCustomNameVisible(false);
             } else {
-                String nickContain = entity.getPersistentDataContainer().get(new NamespacedKey(plugin, "Nickname"), PersistentDataType.STRING);
+                String nickContain = DataUtils.get(entity, "Nickname", PersistentDataType.STRING);
                 if (entity.getName().contains("☠") && nickContain != null) {
                     mobName = nickContain;
                     entity.setCustomName(mobName);
@@ -97,12 +98,12 @@ public class HealthListener implements Listener {
             if (!(event.getEntity() instanceof LivingEntity) || event.getEntity() instanceof ArmorStand) return;
             LivingEntity entity = (LivingEntity) event.getEntity();
 
-            if (entity instanceof Boss) return;
+            if (entity instanceof Boss || BossUtils.isBoss(entity)) return;
 
             String maxHealth = Formatter.decimalFormat(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), 1);
             String currHealth = Formatter.decimalFormat((entity.getHealth() - event.getFinalDamage() < 0) ? 0 : entity.getHealth() - event.getFinalDamage(), 1);
             String mobName = Formatter.nameFormat(entity.getType().name());
-            String nickContain = entity.getPersistentDataContainer().get(new NamespacedKey(plugin, "Nickname"), PersistentDataType.STRING);
+            String nickContain = DataUtils.get(entity, "Nickname", PersistentDataType.STRING);
 
             if ((entity.getName().equalsIgnoreCase(mobName) || entity.getName().contains("❤")) && p.hasLineOfSight(entity)) {
                 entity.setCustomName(ColorUtils.colorMessage(mobName + "&8 | &c&l❤ &f" + currHealth + "&8/&f" + maxHealth));
@@ -116,7 +117,7 @@ public class HealthListener implements Listener {
                     if (entity.getCustomName() == null || entity.getCustomName().contains("☠")) {
                         return;
                     }
-                    entity.getPersistentDataContainer().set(new NamespacedKey(plugin, "Nickname"), PersistentDataType.STRING, entity.getCustomName());
+                    DataUtils.set(entity, "Nickname", PersistentDataType.STRING, entity.getCustomName());
 
                     if (nickContain != null && p.hasLineOfSight(entity)) {
                         mobName = nickContain;
@@ -131,7 +132,7 @@ public class HealthListener implements Listener {
     // Make sure health display is off for entities outside of player range.
     @EventHandler
     public void onMobMove(EntityMoveEvent event) {
-        if (!(event.getEntity() instanceof LivingEntity) || event.getEntity() instanceof Boss || event.getEntity() instanceof ArmorStand)
+        if (!(event.getEntity() instanceof LivingEntity) || event.getEntity() instanceof Boss || event.getEntity() instanceof ArmorStand || BossUtils.isBoss(event.getEntity()))
             return;
 
         LivingEntity entity = event.getEntity();
@@ -144,7 +145,7 @@ public class HealthListener implements Listener {
                 entity.setCustomName(null);
                 entity.setCustomNameVisible(false);
             } else {
-                String nickContain = entity.getPersistentDataContainer().get(new NamespacedKey(plugin, "Nickname"), PersistentDataType.STRING);
+                String nickContain = DataUtils.get(entity, "Nickname", PersistentDataType.STRING);
                 if (entity.getName().contains("☠") && nickContain != null) {
                     mobName = nickContain;
                     entity.setCustomName(mobName);
@@ -155,7 +156,7 @@ public class HealthListener implements Listener {
             String maxHealth = Formatter.decimalFormat(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), 1);
             String currHealth = Formatter.decimalFormat(entity.getHealth(), 1);
             String mobName = Formatter.nameFormat(entity.getType().name());
-            String nickContain = entity.getPersistentDataContainer().get(new NamespacedKey(plugin, "Nickname"), PersistentDataType.STRING);
+            String nickContain = DataUtils.get(entity, "Nickname", PersistentDataType.STRING);
 
             for (Entity entity1 : playersNearby) {
                 Player p = (Player) entity1;
@@ -172,7 +173,7 @@ public class HealthListener implements Listener {
                         if (entity.getName().contains("☠") || entity.getCustomName() == null) {
                             return;
                         }
-                        entity.getPersistentDataContainer().set(new NamespacedKey(plugin, "Nickname"), PersistentDataType.STRING, entity.getCustomName());
+                        DataUtils.set(entity, "Nickname", PersistentDataType.STRING, entity.getCustomName());
                         if (nickContain != null && p.hasLineOfSight(entity)) {
                             mobName = nickContain;
                             entity.setCustomName(ColorUtils.colorMessage(mobName + "&8 | &6&l☠ &f" + currHealth + "&8/&f" + maxHealth));

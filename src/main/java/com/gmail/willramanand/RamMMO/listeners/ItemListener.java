@@ -3,6 +3,7 @@ package com.gmail.willramanand.RamMMO.listeners;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.utils.BuilderWandUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import com.gmail.willramanand.RamMMO.utils.DataUtils;
 import com.gmail.willramanand.RamSkills.RamSkills;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -56,7 +57,7 @@ public class ItemListener implements Listener {
 
         Player player = (Player) event.getEntity();
         for (ItemStack item : player.getInventory().getArmorContents()) {
-            if (item != null && item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "fall_immunity"))) {
+            if (item != null && DataUtils.has(item.getItemMeta(), "fall_immunity")) {
                 event.setCancelled(true);
             }
         }
@@ -68,7 +69,7 @@ public class ItemListener implements Listener {
 
         if (player.isSneaking() && player.isGliding()) {
             for (ItemStack item : player.getInventory().getArmorContents()) {
-                if (item != null && item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "infinite_flight"))) {
+                if (item != null && DataUtils.has(item.getItemMeta(), "infinite_flight")) {
                     event.getPlayer().boostElytra(new ItemStack(Material.FIREWORK_ROCKET));
                 }
             }
@@ -87,7 +88,7 @@ public class ItemListener implements Listener {
         potionDamage.add(EntityDamageEvent.DamageCause.WITHER);
         potionDamage.add(EntityDamageEvent.DamageCause.DRAGON_BREATH);
         for (ItemStack item : player.getInventory().getArmorContents()) {
-            if (item != null && item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "effect_immunity")) && potionDamage.contains(event.getCause())) {
+            if (item != null && DataUtils.has(item.getItemMeta(), "effect_immunity") && potionDamage.contains(event.getCause())) {
                 event.setCancelled(true);
             }
         }
@@ -100,7 +101,7 @@ public class ItemListener implements Listener {
         }
         Player player = (Player) event.getEntity();
         for (ItemStack item : player.getInventory().getArmorContents()) {
-            if (item != null && item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "fire_immunity")) && isFireEffect(event.getCause())) {
+            if (item != null && DataUtils.has(item.getItemMeta(), "fire_immunity") && isFireEffect(event.getCause())) {
                 player.setFireTicks(0);
                 event.setCancelled(true);
             }
@@ -116,7 +117,7 @@ public class ItemListener implements Listener {
         Player player = (Player) event.getEntity();
 
         for (ItemStack item : player.getInventory().getArmorContents()) {
-            if (item == null || !(item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "reduced_dmg_set")))) {
+            if (item == null || !(DataUtils.has(item.getItemMeta(), "reduced_dmg_set"))) {
                 return;
             }
         }
@@ -137,7 +138,7 @@ public class ItemListener implements Listener {
         meta.lore(lore);
         newSpawner.setItemMeta(meta);
 
-        if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "silk_touch"))) {
+        if (player.getInventory().getItemInMainHand() != null && DataUtils.has(player.getInventory().getItemInMainHand().getItemMeta(), "silk_touch")) {
             event.getBlock().getLocation().getWorld().dropItemNaturally(event.getBlock().getLocation(), newSpawner);
         }
     }
@@ -158,7 +159,7 @@ public class ItemListener implements Listener {
 
     @EventHandler
     public void cannotPlace(BlockPlaceEvent event) {
-        if (!(event.getItemInHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "cannot_place")))) return;
+        if (!(DataUtils.has(event.getItemInHand().getItemMeta(), "cannot_place"))) return;
         event.setCancelled(true);
         event.getPlayer().sendMessage(ColorUtils.colorMessage("&4This item cannot be placed!"));
     }
@@ -170,7 +171,7 @@ public class ItemListener implements Listener {
         AbstractArrow arrow = (AbstractArrow) event.getEntity();
         Player player = (Player) event.getEntity().getShooter();
 
-        if (player.getInventory().getItemInMainHand() != null && player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "apollo_bow"))) {
+        if (player.getInventory().getItemInMainHand() != null && DataUtils.has(player.getInventory().getItemInMainHand().getItemMeta(), "apollo_bow")) {
             arrow.setDamage(arrow.getDamage() * 2);
         }
     }
@@ -182,14 +183,14 @@ public class ItemListener implements Listener {
         Item item = (Item) event.getEntity();
         ItemStack itemStack = item.getItemStack();
 
-        if (itemStack.getItemMeta() != null && itemStack.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "cannot_burn"))) {
+        if (itemStack.getItemMeta() != null && DataUtils.has(itemStack.getItemMeta(), "cannot_burn")) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void instaBreak(BlockDamageEvent event) {
-        if (event.getPlayer().getInventory().getItemInMainHand() == null || event.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null || !(event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "insta_break"))))
+        if (event.getPlayer().getInventory().getItemInMainHand() == null || event.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null || !(DataUtils.has(event.getPlayer().getInventory().getItemInMainHand().getItemMeta(), "insta_break")))
             return;
         if (!(Tag.MINEABLE_PICKAXE.isTagged(event.getBlock().getType()))) return;
         event.setInstaBreak(true);
@@ -214,7 +215,7 @@ public class ItemListener implements Listener {
         }
 
         ItemStack itemStack = player.getInventory().getItemInMainHand();
-        if (itemStack.getItemMeta() == null || !(itemStack.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "builderwand")))) return;
+        if (itemStack.getItemMeta() == null || !(DataUtils.has(itemStack.getItemMeta(), "builderwand"))) return;
 
         Block block = event.getClickedBlock();
         if (block == null || block.getType() == Material.AIR) {
@@ -265,7 +266,7 @@ public class ItemListener implements Listener {
         Player player = (Player) event.getDamager();
         if (player.getInventory().getItemInMainHand() == null) return;
         if (player.getInventory().getItemInMainHand().getItemMeta() == null
-                || !(player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "strike_lightning")))) return;
+                || !(DataUtils.has(player.getInventory().getItemInMainHand().getItemMeta(), "strike_lightning"))) return;
 
         player.getWorld().strikeLightning(event.getEntity().getLocation());
     }
@@ -277,7 +278,7 @@ public class ItemListener implements Listener {
         Player player = (Player) event.getEntity();
         if (player.getInventory().getItemInMainHand() == null) return;
         if (player.getInventory().getItemInMainHand().getItemMeta() == null
-                || !(player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "strike_lightning")))) return;
+                || !(DataUtils.has(player.getInventory().getItemInMainHand().getItemMeta(), "strike_lightning"))) return;
 
         event.setCancelled(true);
     }
@@ -287,7 +288,7 @@ public class ItemListener implements Listener {
         if (!(event.getAction().isLeftClick())) return;
         if (event.getPlayer().getInventory().getItemInMainHand() == null) return;
         if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null
-                || !(event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, "downpour")))) return;
+                || !(DataUtils.has(event.getPlayer().getInventory().getItemInMainHand().getItemMeta(), "downpour"))) return;
 
         Player player = event.getPlayer();
 

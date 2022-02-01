@@ -3,6 +3,7 @@ package com.gmail.willramanand.RamMMO.listeners;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.item.Item;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
+import com.gmail.willramanand.RamMMO.utils.DataUtils;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -39,7 +40,7 @@ public class CraftingListener implements Listener {
 
         for (ItemStack item : event.getInventory().getMatrix()) {
             if (item == null) continue;
-            if (item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, Item.NETHERFIRE_CHEST.getClassName()))) {
+            if (DataUtils.has(item.getItemMeta(), Item.NETHERFIRE_CHEST.getClassName())) {
                 item.getItemMeta().getEnchants().keySet().forEach(enchantment -> {
                     newEnchants.add(enchantment);
                     enchantLvls.put(enchantment, item.getItemMeta().getEnchantLevel(enchantment));
@@ -69,7 +70,6 @@ public class CraftingListener implements Listener {
 
     @EventHandler
     public void smithingRecipes(PrepareSmithingEvent event) {
-        Player p  = (Player) Bukkit.getOnlinePlayers().toArray()[0];
 
         if (event.getInventory().getRecipe() == null) return;
         Item selected = null;
@@ -77,7 +77,6 @@ public class CraftingListener implements Listener {
             SmithingRecipe recipe = (SmithingRecipe) event.getInventory().getRecipe();
             if (recipe.getKey().getKey().equalsIgnoreCase(item.getRecipeKey())) {
                 selected = item;
-                p.sendMessage("item selected");
             }
             if (selected != null) break;
         }
@@ -87,21 +86,17 @@ public class CraftingListener implements Listener {
         Set<Enchantment> newEnchants = new HashSet<>();
         Map<Enchantment, Integer> enchantLvls = new HashMap<>();
 
-        p.sendMessage("checking inputs");
         if (event.getInventory().getInputEquipment() == null || event.getInventory().getInputMineral() == null) return;
-        p.sendMessage("inputs good");
         event.getInventory().getInputEquipment().getItemMeta().getEnchants().keySet().forEach(enchantment -> {
             newEnchants.add(enchantment);
             enchantLvls.put(enchantment, event.getInventory().getInputEquipment().getItemMeta().getEnchantLevel(enchantment));
         });
 
-        if (newEnchants.size() == 0) p.sendMessage("empty enchants");
 
         ItemStack newItem = new ItemStack(ItemManager.getItem(selected));
         ItemMeta meta = newItem.getItemMeta();
         for (Enchantment enchantment : newEnchants) {
             if (meta.hasEnchant(enchantment)) continue;
-            p.sendMessage("Enchantment" + enchantment.getName());
             meta.addEnchant(enchantment, enchantLvls.get(enchantment), true);
         }
         newItem.setItemMeta(meta);

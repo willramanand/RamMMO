@@ -1,17 +1,19 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.boss.BossManager;
 import com.gmail.willramanand.RamMMO.utils.BossUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -29,39 +31,49 @@ public class BossListener implements Listener {
 
     @EventHandler
     public void onBossSpawn(CreatureSpawnEvent event) {
-
-        LivingEntity boss = event.getEntity();
-
-        if (!(BossUtils.isBoss(boss))) return;
-
-        for (LivingEntity ent : boss.getLocation().getWorld().getLivingEntities()) {
-            if (BossUtils.isBoss(ent) && ent != boss) {
-                ent.remove();
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(ColorUtils.colorMessage(String.format("%s &6has gone into hiding!", ent.getCustomName())));
-                }
-            }
-        }
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.sendMessage(ColorUtils.colorMessage(String.format("%s &6has been spotted in World:&d %s &6at coords:&d %b, %b, %b"
-                    , boss.getCustomName(), boss.getWorld().getName(), boss.getLocation().getBlockX(), boss.getLocation().getBlockY(), boss.getLocation().getBlockZ())));
-        }
-
-        boss.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 99999, 3, false));
+        if (BossUtils.isBoss(event.getEntity()))
+            event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 99999, 2, false));
     }
 
     @EventHandler
+    public void updateBossBar(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity)) return;
+        if (!(BossUtils.isBoss((LivingEntity) event.getEntity()))) return;
+        if (BossManager.bossBar() == null) return;
+
+        double maxHealth = ((LivingEntity) event.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+        double currentHealth = ((LivingEntity) event.getEntity()).getHealth();
+        double progress = currentHealth / maxHealth;
+        BossManager.bossBar().setProgress(progress);
+    }
+
+    @EventHandler
+    public void updateBossBarRegen(EntityRegainHealthEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity)) return;
+        if (!(BossUtils.isBoss((LivingEntity) event.getEntity()))) return;
+        if (BossManager.bossBar() == null) return;
+
+        double maxHealth = ((LivingEntity) event.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+        double currentHealth = ((LivingEntity) event.getEntity()).getHealth();
+        double progress = currentHealth / maxHealth;
+        BossManager.bossBar().setProgress(progress);
+    }
+
+
+    @EventHandler
     public void onFireBoss(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity)) return;
         if (!(BossUtils.isBoss((LivingEntity) event.getEntity()))) return;
 
         if (isFireEffect(event.getCause())) {
+            event.getEntity().setFireTicks(0);
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void removeDamagingEffect(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity)) return;
         if (!(BossUtils.isBoss((LivingEntity) event.getEntity()))) return;
 
         List<EntityDamageEvent.DamageCause> potionDamage = new ArrayList<>();
@@ -76,21 +88,40 @@ public class BossListener implements Listener {
     @EventHandler
     public void onBossDeath(EntityDeathEvent event) {
         if (!(BossUtils.isBoss(event.getEntity()))) return;
-
         LivingEntity boss = event.getEntity();
-
         Collection<Entity> nearbyPlayers = boss.getLocation().getNearbyEntities(20, 20, 20);
+        Bukkit.broadcast(Component.text(ColorUtils.colorMessage(boss.getCustomName() + " &6has been slain!")));
+        BossManager.setActive(false);
 
+        if (BossManager.bossBar() != null) {
+            BossManager.bossBar().removeAll();
+            BossManager.bossBar(null);
+        }
         for (Entity entity : nearbyPlayers) {
-            Player player = (Player) entity;
+            if (entity instanceof Player) {
+                Player player = (Player) entity;
 
-            player.addPotionEffect(new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, 36000, 4, false));
-            if (RamMMO.getEconomy().hasAccount(player)) {
-                RamMMO.getEconomy().depositPlayer(player, 500);
+                player.sendMessage(ColorUtils.colorMessage("&6Your heroics have been rewarded!"));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, 36000, 4, false));
+                if (RamMMO.getEconomy().hasAccount(player)) {
+                    RamMMO.getEconomy().depositPlayer(player, 100000);
+                }
             }
         }
+        event.setDroppedExp(12000);
     }
 
+    @EventHandler
+    public void increaseProjectile(ProjectileLaunchEvent event) {
+        if (!(event.getEntity() instanceof AbstractArrow)) return;
+        if (!(event.getEntity().getShooter() instanceof LivingEntity)) return;
+        AbstractArrow arrow = (AbstractArrow) event.getEntity();
+        LivingEntity entity = (LivingEntity) event.getEntity().getShooter();
+
+        if (!(BossUtils.isBoss(entity))) return;
+        double damage = (arrow.getDamage() * 5) + 40;
+        arrow.setDamage(damage);
+    }
 
     private boolean isFireEffect(EntityDamageEvent.DamageCause cause) {
         List<EntityDamageEvent.DamageCause> fireDamage = new ArrayList<>();

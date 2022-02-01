@@ -1,6 +1,8 @@
 package com.gmail.willramanand.RamMMO.commands;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.boss.BossManager;
+import com.gmail.willramanand.RamMMO.boss.Bosses;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -23,13 +25,16 @@ public class BossCommand extends SubCommand {
         }
 
         if (player.hasPermission("rammmo.boss")) {
-            Location loc = player.getLocation();
-
             try {
                 if (args.length == 2) {
-                    if (args[1].equalsIgnoreCase("wolf")) {
+                    if (args[1].equalsIgnoreCase("skeleton")) {
+                        BossManager.spawnBoss(Bosses.HEADLESS_HORSEMAN, player.getLocation());
+                    } else if (args[1].equalsIgnoreCase("ravager")) {
+                        BossManager.spawnBoss(Bosses.THE_MINOTAUR, player.getLocation());
+                    } else if (args[1].equalsIgnoreCase("phantom")) {
+                        BossManager.spawnBoss(Bosses.THE_GHOST, player.getLocation());
                     } else {
-                        player.sendMessage("§4Valid agility arguments: wolf");
+                        player.sendMessage("§4Valid agility arguments: skeleton, minotaur, phantom");
                     }
                 } else {
                     player.sendMessage("§e/mmo §d<boss> §a<type>");
@@ -61,7 +66,7 @@ public class BossCommand extends SubCommand {
     public List<String> getPrimaryArguments() {
         List<String> args = new ArrayList<>();
 
-        args.add("wolf");
+        args.add("skeleton");
         return args;
     }
 

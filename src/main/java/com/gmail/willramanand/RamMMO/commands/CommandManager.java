@@ -31,7 +31,8 @@ public class CommandManager implements TabExecutor {
         this.commands.add(new VersionCommand(plugin));
         this.commands.add(new PassiveCommand(plugin));
         this.commands.add(new ItemTestCommand());
-        //this.commands.add(new BossCommand(plugin)); // WIP
+        this.commands.add(new BossCommand(plugin)); // WIP
+        this.commands.add(new LocateBossCommand(plugin));
     }
 
     @Override

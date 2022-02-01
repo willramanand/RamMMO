@@ -3,6 +3,7 @@ package com.gmail.willramanand.RamMMO.commands;
 public enum Commands {
     MAIN("mmo"),
     BOSS("boss"),
+    LOCATEBOSS("locateboss"),
     VERSION("version"),
     MOBS("mobs"),
     HELP("help"),

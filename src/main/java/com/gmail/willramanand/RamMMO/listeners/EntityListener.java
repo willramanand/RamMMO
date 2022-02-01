@@ -1,10 +1,14 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.boss.BossManager;
+import com.gmail.willramanand.RamMMO.boss.Bosses;
 import com.gmail.willramanand.RamMMO.item.Item;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.mobs.MobTier;
+import com.gmail.willramanand.RamMMO.utils.BossUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import com.gmail.willramanand.RamMMO.utils.DataUtils;
 import com.gmail.willramanand.RamSkills.RamSkills;
 import com.gmail.willramanand.RamSkills.leveler.SkillLeveler;
 import com.gmail.willramanand.RamSkills.skills.Skill;
@@ -151,9 +155,9 @@ public class EntityListener implements Listener {
         Entity entity = event.getEntity();
         Random rand = new Random();
 
-        if (!(entity instanceof Monster) || entity instanceof ZombieVillager || entity instanceof Boss) return;
+        if (!(entity instanceof Monster) || entity instanceof ZombieVillager || entity instanceof Boss || BossUtils.isBoss((LivingEntity) entity)) return;
 
-        if (!(entity.getPersistentDataContainer().has(new NamespacedKey(plugin, "Rarity"), PersistentDataType.INTEGER))) {
+        if (!(DataUtils.has(entity, "Rarity"))) {
 
             MobTier mobTier;
             int randomInt = rand.nextInt(1001);
@@ -162,9 +166,9 @@ public class EntityListener implements Listener {
                 mobTier = MobTier.UNCOMMON;
             } else if (randomInt >= 950 && randomInt < 980) {
                 mobTier = MobTier.RARE;
-            } else if (randomInt >= 980 && randomInt < 999) {
+            } else if (randomInt >= 980 && randomInt < 995) {
                 mobTier = MobTier.EPIC;
-            } else if (randomInt >= 999) {
+            } else if (randomInt >= 995) {
                 mobTier = MobTier.LEGENDARY;
             } else {
                 mobTier = MobTier.COMMON;
@@ -189,7 +193,7 @@ public class EntityListener implements Listener {
         if (!(entity instanceof Monster) && !(entity instanceof Boss)) return;
 
         if (entity.getPersistentDataContainer().has(new NamespacedKey(plugin, "Rarity"), PersistentDataType.INTEGER)) {
-            int rarity = entity.getPersistentDataContainer().get(new NamespacedKey(plugin, "Rarity"), PersistentDataType.INTEGER);
+            int rarity = DataUtils.get(entity, "Rarity", PersistentDataType.INTEGER);
 
             Skill skill = Skills.COMBAT;
             SkillLeveler skillLeveler = new CombatLeveler(RamSkills.getInstance());
@@ -260,7 +264,7 @@ public class EntityListener implements Listener {
         AttributeModifier attackMod = new AttributeModifier("tier_damage", mobTier.getDamageMult(), AttributeModifier.Operation.MULTIPLY_SCALAR_1);
 
 
-        en.getPersistentDataContainer().set(new NamespacedKey(plugin, "Rarity"), PersistentDataType.INTEGER, mobTier.getMetaValue());
+        DataUtils.set(en, "Rarity", PersistentDataType.INTEGER, mobTier.getMetaValue());
         en.getAttribute(Attribute.GENERIC_MAX_HEALTH).addModifier(healthMod);
         en.getAttribute(Attribute.GENERIC_ARMOR).addModifier(armorMod);
         en.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).addModifier(attackMod);

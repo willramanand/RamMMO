@@ -1,5 +1,6 @@
 package com.gmail.willramanand.RamMMO;
 
+import com.gmail.willramanand.RamMMO.boss.BossManager;
 import com.gmail.willramanand.RamMMO.commands.CommandManager;
 import com.gmail.willramanand.RamMMO.config.ConfigManager;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
@@ -65,6 +66,10 @@ public class RamMMO extends JavaPlugin {
         ItemManager.registerItems();
         ItemManager.buildExtraRecipes();
 
+        // Bosses
+        BossManager.registerBosses();
+        BossManager.bossSpawnTicker();
+
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (!playerManager.hasPlayerData(p)) {
                 configManager.load(p);
@@ -79,7 +84,7 @@ public class RamMMO extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new DamageIndicatorListener(this), this);
         Bukkit.getPluginManager().registerEvents(new VersionListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CraftingListener(this), this);
-        //Bukkit.getPluginManager().registerEvents(new BossListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new BossListener(this), this);
 
         // Commands
         commandManager.setup();
@@ -101,6 +106,8 @@ public class RamMMO extends JavaPlugin {
         for (Player player : Bukkit.getOnlinePlayers())
             configManager.save(player, true);
         difficultyUtils.save();
+        if (BossManager.isActive())
+            BossManager.getCurrentBoss().damage(99999);
         log.info("Disabled");
     }
 
