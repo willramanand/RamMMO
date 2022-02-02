@@ -4,6 +4,7 @@ import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.enums.Passive;
 import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
+import com.gmail.willramanand.RamMMO.ui.PassivesScreen;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -28,89 +29,8 @@ public class PassiveCommand extends SubCommand {
             return;
         }
 
-        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
-
-        Passive passive = null;
-        if (args.length == 3) {
-            try {
-                if (args[1].equalsIgnoreCase("agility")) {
-                    if (args[2].equalsIgnoreCase("jump_boost")) {
-                        passive = Passives.AGILITY_JUMP_BOOST;
-                    } else {
-                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: jump_boost"));
-                    }
-
-                } else if (args[1].equalsIgnoreCase("fishing")) {
-
-                    if (args[2].equalsIgnoreCase("dolphins_grace")) {
-                        passive = Passives.FISHING_DOLPHINS_GRACE;
-                    } else if (args[2].equalsIgnoreCase("conduit_power")) {
-                        passive = Passives.FISHING_CONDUIT_POWER;
-                    } else {
-                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: dolphins_grace, conduit_power"));
-                    }
-
-                } else if (args[1].equalsIgnoreCase("excavation")) {
-
-                    if (args[2].equalsIgnoreCase("haste")) {
-                        passive = Passives.EXCAVATION_HASTE;
-                    } else {
-                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: haste"));
-                    }
-
-                } else if (args[1].equalsIgnoreCase("foraging")) {
-
-                    if (args[2].equalsIgnoreCase("haste")) {
-                        passive = Passives.WOODCUTTING_HASTE;
-                    } else {
-                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: haste"));
-                    }
-
-                } else if (args[1].equalsIgnoreCase("mining")) {
-
-                    if (args[2].equalsIgnoreCase("haste")) {
-                        passive = Passives.MINING_HASTE;
-                    } else {
-                        player.sendMessage(ColorUtils.colorMessage("&4Valid agility arguments: haste"));
-                    }
-
-                }
-
-            } catch (IllegalArgumentException e) {
-                player.sendMessage(ColorUtils.colorMessage("&4Not valid argument!"));
-            }
-            if (passive != null) {
-                if (mmoPlayer.getPassives(passive)) {
-                    mmoPlayer.setPassives(passive, false);
-                    player.sendMessage(ColorUtils.colorMessage("&d" + passive.getPassive() + " &efor &d" + passive.getSkill() + " &ehas been §cdisabled"));
-                } else {
-                    mmoPlayer.setPassives(passive, true);
-                    player.sendMessage(ColorUtils.colorMessage("&d" + passive.getPassive() + " &efor &d" + passive.getSkill() + " &ehas been §aenabled"));
-                }
-                player.performCommand("mmo passive");
-            }
-        } else if (args.length == 1) {
-            player.sendMessage(ColorUtils.colorMessage("&6---- &bPassives &6----"));
-            for (Passive pass : Passives.values()) {
-                Component component = null;
-
-                if (mmoPlayer.getPassives(pass)) {
-                    component = Component.text("[Enabled]");
-                    component = component.color(TextColor.color(85, 255, 85));
-                } else if (!mmoPlayer.getPassives(pass)) {
-                    component = Component.text("[Disabled]");
-                    component = component.color(TextColor.color(255, 85, 85));
-                }
-
-                component = component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/mmo passive " + pass.getSkill() + " " + pass.getPassive()));
-                component = component.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Toggle passive").color(TextColor.color(255, 85, 255))));
-
-                player.sendMessage(ColorUtils.colorMessage("&d" + pass.getSkill() + " : " + pass.getPassive()));
-                player.sendMessage(component);
-            }
-        } else {
-            player.sendMessage(ColorUtils.colorMessage("&b/mmo passive|p"));
-        }
+        PassivesScreen passivesScreen = new PassivesScreen(plugin, player);
+        player.openInventory(passivesScreen.getInventory());
     }
 
     @Override

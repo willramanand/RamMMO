@@ -1,32 +1,20 @@
 package com.gmail.willramanand.RamMMO.commands;
 
+import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.item.Item;
-import com.gmail.willramanand.RamMMO.item.ItemManager;
+import com.gmail.willramanand.RamMMO.ui.ItemsScreen;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemTestCommand extends SubCommand {
+public class ItemCommand extends SubCommand {
     @Override
     public void onCommand(Player player, String[] args) {
         if (player.hasPermission("rammmo.item")) {
-            if (args.length == 2) {
-                for (Item item : Item.values()) {
-                    if (args[1].equalsIgnoreCase(item.name().toLowerCase())) {
-                        player.getInventory().addItem(ItemManager.getItem(item));
-                    }
-                }
-            } else if (args.length == 3) {
-                for (Item item : Item.values()) {
-                    if (args[1].equalsIgnoreCase(item.name().toLowerCase()) && args[2] != null) {
-                        for (int i = 0; i < Integer.parseInt(args[2]); i++) {
-                            player.getInventory().addItem(ItemManager.getItem(item));
-                        }
-                    }
-                }
-            }
+            ItemsScreen itemsScreen = new ItemsScreen(RamMMO.getInstance());
+            player.openInventory(itemsScreen.getInventory());
         } else {
             player.sendMessage(ColorUtils.colorMessage("&4You do not permission to do that!"));
         }

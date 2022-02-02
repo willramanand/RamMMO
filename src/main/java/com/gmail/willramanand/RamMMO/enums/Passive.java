@@ -4,6 +4,8 @@ public interface Passive {
 
     String name();
 
+    String getDisplayName();
+
     String toString();
 
     String getSkill();
