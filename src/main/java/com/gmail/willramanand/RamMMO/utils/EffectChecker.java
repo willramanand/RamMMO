@@ -3,8 +3,7 @@ package com.gmail.willramanand.RamMMO.utils;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
-import com.gmail.willramanand.RamSkills.RamSkills;
-import com.gmail.willramanand.RamSkills.player.PlayerManager;
+import com.gmail.willramanand.RamSkills.api.RamSkillsAPI;
 import com.gmail.willramanand.RamSkills.skills.Skills;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -19,8 +18,6 @@ import java.util.List;
 public class EffectChecker {
 
     private final RamMMO plugin;
-    private final PlayerManager skillsPlayerManager = RamSkills.getInstance().getPlayerManager();
-    private MMOPlayer mmoPlayer;
     private final List<PotionEffectType> harmfulPotion = new ArrayList<>();
 
     public EffectChecker(RamMMO plugin) {
@@ -29,7 +26,7 @@ public class EffectChecker {
     }
 
     public void checkPassives(Player player) {
-        this.mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
+        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
         if (mmoPlayer != null) {
             checkForaging(mmoPlayer);
             checkExcavation(mmoPlayer);
@@ -44,7 +41,7 @@ public class EffectChecker {
     }
 
     private void checkFishing(MMOPlayer mmoPlayer) {
-        int fishLvl = skillsPlayerManager.getPlayerData(mmoPlayer.getPlayer()).getSkillLevel(Skills.FISHING);
+        int fishLvl = RamSkillsAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.FISHING);
 
         if (mmoPlayer.getPassives(Passives.FISHING_DOLPHINS_GRACE)) {
             if (fishLvl >= 10 && fishLvl < 20) {
@@ -65,7 +62,7 @@ public class EffectChecker {
     }
 
     private void checkAgility(MMOPlayer mmoPlayer) {
-        int agilityLvl = skillsPlayerManager.getPlayerData(mmoPlayer.getPlayer()).getSkillLevel(Skills.AGILITY);
+        int agilityLvl = RamSkillsAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.AGILITY);
         if (mmoPlayer.getPassives(Passives.AGILITY_JUMP_BOOST)) {
 
             if (agilityLvl >= 20 && agilityLvl < 40) {
@@ -89,7 +86,7 @@ public class EffectChecker {
             return;
         }
 
-        int mineLvl = skillsPlayerManager.getPlayerData(mmoPlayer.getPlayer()).getSkillLevel(Skills.MINING);
+        int mineLvl = RamSkillsAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.MINING);
         if (mineLvl >= 10 && mineLvl < 20) {
             mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
         } else if (mineLvl >= 20) {
@@ -109,7 +106,7 @@ public class EffectChecker {
             return;
         }
 
-        int excavateLvl = skillsPlayerManager.getPlayerData(mmoPlayer.getPlayer()).getSkillLevel(Skills.EXCAVATION);
+        int excavateLvl = RamSkillsAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.EXCAVATION);
         if (excavateLvl >= 10 && excavateLvl < 20) {
             mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
         } else if (excavateLvl >= 20) {
@@ -129,7 +126,7 @@ public class EffectChecker {
             return;
         }
 
-        int axeLvl = skillsPlayerManager.getPlayerData(mmoPlayer.getPlayer()).getSkillLevel(Skills.WOODCUTTING);
+        int axeLvl = RamSkillsAPI.getSkillLevel(mmoPlayer.getPlayer(), Skills.WOODCUTTING);
         if (axeLvl >= 10 && axeLvl < 20) {
             mmoPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20, 0));
         } else if (axeLvl >= 20) {

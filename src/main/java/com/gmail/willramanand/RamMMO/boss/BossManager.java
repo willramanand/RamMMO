@@ -23,6 +23,7 @@ import java.util.Random;
 public class BossManager {
 
     private static final Map<Bosses, BaseBoss> bosses = new HashMap<>();
+    private static final Map<String, Bosses> bossRegistry = new HashMap<>();
     private static Bosses currentBossType;
     private static LivingEntity currentBoss;
     private static BossBar bossBar;
@@ -32,6 +33,10 @@ public class BossManager {
         bosses.put(Bosses.HEADLESS_HORSEMAN, new HeadlessHorseman());
         bosses.put(Bosses.THE_MINOTAUR, new TheMinotaur());
         bosses.put(Bosses.THE_GHOST, new TheGhost());
+
+        for (Bosses boss : Bosses.values()) {
+            bossRegistry.put(boss.name().toLowerCase(), boss);
+        }
     }
 
     public static void spawnBoss(Bosses boss, Location loc) {
@@ -77,6 +82,8 @@ public class BossManager {
         location.getChunk().load();
         return location;
     }
+
+    public static Bosses getBoss(String displayName) { return bossRegistry.get(displayName); }
 
     public static LivingEntity getCurrentBoss() {
         return currentBoss;

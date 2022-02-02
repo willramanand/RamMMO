@@ -1,7 +1,6 @@
 package com.gmail.willramanand.RamMMO.ui;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.enums.Passive;
 import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.ui.uiitems.InventoryItem;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;

@@ -1,8 +1,6 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.boss.BossManager;
-import com.gmail.willramanand.RamMMO.boss.Bosses;
 import com.gmail.willramanand.RamMMO.item.Item;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.mobs.MobTier;
@@ -10,6 +8,7 @@ import com.gmail.willramanand.RamMMO.utils.BossUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import com.gmail.willramanand.RamMMO.utils.DataUtils;
 import com.gmail.willramanand.RamSkills.RamSkills;
+import com.gmail.willramanand.RamSkills.api.RamSkillsAPI;
 import com.gmail.willramanand.RamSkills.leveler.SkillLeveler;
 import com.gmail.willramanand.RamSkills.skills.Skill;
 import com.gmail.willramanand.RamSkills.skills.Skills;
@@ -204,26 +203,26 @@ public class EntityListener implements Listener {
             double dropMult = 0.0;
 
             switch (rarity) {
-                case 1 -> {
+                case 1:
                     money = UNCOMMON_MONEY;
                     xpMult = UNCOMMON_XP;
                     dropMult = UNCOMMON_DROP;
-                }
-                case 2 -> {
+                    break;
+                case 2:
                     money = RARE_MONEY;
                     xpMult = RARE_XP;
                     dropMult = RARE_DROP;
-                }
-                case 3 -> {
+                    break;
+                case 3:
                     money = EPIC_MONEY;
                     xpMult = EPIC_XP;
                     dropMult = EPIC_DROP;
-                }
-                case 4 -> {
+                    break;
+                case 4:
                     money = LEGEND_MONEY;
                     xpMult = LEGEND_XP;
                     dropMult = LEGEND_DROP;
-                }
+                    break;
             }
 
             money *= modifier;
@@ -231,7 +230,7 @@ public class EntityListener implements Listener {
             dropMult *= modifier;
 
             econ.depositPlayer(player, money);
-            RamSkills.getInstance().getLeveler().addXp(player, skill, xpMult * skillLeveler.getXp(player, source));
+            RamSkillsAPI.addXp(player, skill, xpMult * skillLeveler.getXp(player, source));
             event.setDroppedExp((int) xpMult * xp);
             for (ItemStack item : droppedItems) {
                 for (int i = 0; i < dropMult; i++) {
@@ -312,22 +311,38 @@ public class EntityListener implements Listener {
     }
 
     private double calcDamageIncrease(int modifier, Entity entity) {
-        if (entity.getPersistentDataContainer().has(new NamespacedKey(plugin, "Rarity"), PersistentDataType.INTEGER)) {
-            int rarity = entity.getPersistentDataContainer().get(new NamespacedKey(plugin, "Rarity"), PersistentDataType.INTEGER);
+        if (DataUtils.has(entity, "Rarity")) {
+            int rarity = DataUtils.get(entity, "Rarity", PersistentDataType.INTEGER);
 
             if (modifier <= 0) {
                 switch (rarity) {
-                    case 1 -> modifier += MobTier.UNCOMMON.getDamageMult();
-                    case 2 -> modifier += MobTier.RARE.getDamageMult();
-                    case 3 -> modifier += MobTier.EPIC.getDamageMult();
-                    case 4 -> modifier += MobTier.LEGENDARY.getDamageMult();
+                    case 1:
+                        modifier += MobTier.UNCOMMON.getDamageMult();
+                        break;
+                    case 2:
+                        modifier += MobTier.RARE.getDamageMult();
+                        break;
+                    case 3:
+                        modifier += MobTier.EPIC.getDamageMult();
+                        break;
+                    case 4:
+                        modifier += MobTier.LEGENDARY.getDamageMult();
+                        break;
                 }
             } else {
                 switch (rarity) {
-                    case 1 -> modifier *= MobTier.UNCOMMON.getDamageMult();
-                    case 2 -> modifier *= MobTier.RARE.getDamageMult();
-                    case 3 -> modifier *= MobTier.EPIC.getDamageMult();
-                    case 4 -> modifier *= MobTier.LEGENDARY.getDamageMult();
+                    case 1:
+                        modifier *= MobTier.UNCOMMON.getDamageMult();
+                        break;
+                    case 2:
+                        modifier *= MobTier.RARE.getDamageMult();
+                        break;
+                    case 3:
+                        modifier *= MobTier.EPIC.getDamageMult();
+                        break;
+                    case 4:
+                        modifier *= MobTier.LEGENDARY.getDamageMult();
+                        break;
                 }
             }
         }

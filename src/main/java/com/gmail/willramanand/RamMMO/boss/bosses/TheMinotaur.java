@@ -2,17 +2,11 @@ package com.gmail.willramanand.RamMMO.boss.bosses;
 
 import com.gmail.willramanand.RamMMO.boss.BaseBoss;
 import com.gmail.willramanand.RamMMO.boss.Bosses;
-import com.gmail.willramanand.RamMMO.item.Item;
-import com.gmail.willramanand.RamMMO.item.ItemManager;
-import com.gmail.willramanand.RamMMO.utils.BossUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.entity.Evoker;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Ravager;
 
 public class TheMinotaur extends BaseBoss {
 

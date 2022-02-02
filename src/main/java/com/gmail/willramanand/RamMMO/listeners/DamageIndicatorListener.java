@@ -33,7 +33,8 @@ public class DamageIndicatorListener implements Listener {
         if (event.getEntity().getType() == EntityType.DROPPED_ITEM) return;
 
         if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION
-                || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK || event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE) return;
+                || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK || event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE)
+            return;
 
         if (checkVisible(event.getEntity())) {
             IndicatorUtils.spawnArmorStand(event.getEntity().getLocation(), false, event.getFinalDamage(), true);
@@ -53,10 +54,14 @@ public class DamageIndicatorListener implements Listener {
                 isCrit = true;
                 isCritMap.remove(player.getUniqueId());
             }
-        } else if (event.getDamager() instanceof Projectile projectile && projectile.getShooter() instanceof Player player) {
-            if (isCritMap.contains(player.getUniqueId())) {
-                isCrit = true;
-                isCritMap.remove(player.getUniqueId());
+        } else if (event.getDamager() instanceof Projectile) {
+            Projectile projectile = (Projectile) event.getDamager();
+            if (projectile.getShooter() instanceof Player) {
+                Player player = (Player) projectile.getShooter();
+                if (isCritMap.contains(player.getUniqueId())) {
+                    isCrit = true;
+                    isCritMap.remove(player.getUniqueId());
+                }
             }
         }
 

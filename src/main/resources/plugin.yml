@@ -10,8 +10,6 @@ commands:
   mmo:
     description: Base command for RamMMO.
 permissions:
-  rammmo.mmo:
-    default: true
   rammmo.boss:
     default: op
   rammmo.item:

@@ -1,6 +1,5 @@
 package com.gmail.willramanand.RamMMO.enums;
 
-import com.gmail.willramanand.RamSkills.skills.Skill;
 import org.bukkit.potion.PotionEffectType;
 
 public enum Passives implements Passive {

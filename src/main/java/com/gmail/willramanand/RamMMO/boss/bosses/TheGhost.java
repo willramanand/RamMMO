@@ -5,7 +5,10 @@ import com.gmail.willramanand.RamMMO.boss.Bosses;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.*;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
+import org.bukkit.entity.Phantom;
+import org.bukkit.entity.Vex;
 import org.bukkit.inventory.ItemStack;
 
 public class TheGhost extends BaseBoss {

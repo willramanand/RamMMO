@@ -1,7 +1,10 @@
 package com.gmail.willramanand.RamMMO;
 
+import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.PaperCommandManager;
 import com.gmail.willramanand.RamMMO.boss.BossManager;
-import com.gmail.willramanand.RamMMO.commands.CommandManager;
+import com.gmail.willramanand.RamMMO.boss.Bosses;
+import com.gmail.willramanand.RamMMO.commands.MMOCommand;
 import com.gmail.willramanand.RamMMO.config.ConfigManager;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.listeners.*;
@@ -18,17 +21,19 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class RamMMO extends JavaPlugin {
 
     private static final Logger log = Logger.getLogger("Minecraft");
     public static RamMMO i;
-    private CommandManager commandManager;
     private EffectChecker effectChecker;
     private ConfigManager configManager;
     private PlayerManager playerManager;
     private DifficultyUtils difficultyUtils;
+    private PaperCommandManager commandManager;
     private static Economy econ = null;
     private static Permission perms = null;
     private static Chat chat = null;
@@ -51,7 +56,6 @@ public class RamMMO extends JavaPlugin {
             setupEconomy();
         }
 
-        commandManager = new CommandManager(this);
         effectChecker = new EffectChecker(this);
         configManager = new ConfigManager(this);
         playerManager = new PlayerManager(this);
@@ -88,7 +92,7 @@ public class RamMMO extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new GUIListener(this), this);
 
         // Commands
-        commandManager.setup();
+        registerCommands();
 
         new BukkitRunnable() {
             public void run() {
@@ -124,8 +128,30 @@ public class RamMMO extends JavaPlugin {
         return true;
     }
 
-    public CommandManager getCommandManager() {
-        return commandManager;
+    private void registerCommands() {
+        commandManager = new PaperCommandManager(this);
+
+        commandManager.enableUnstableAPI("help");
+
+        commandManager.getCommandContexts().registerContext(Bosses.class, c -> {
+            String input = c.popFirstArg();
+            Bosses boss = BossManager.getBoss(input);
+            if (boss != null) {
+                return boss;
+            } else {
+                throw new InvalidCommandArgument("Boss " + input + " not found!");
+            }
+        });
+
+        commandManager.getCommandCompletions().registerAsyncCompletion("bosses", context -> {
+            List<String> values = new ArrayList<>();
+            for (Bosses boss : Bosses.values()) {
+                values.add(boss.name().toLowerCase());
+            }
+            return values;
+        });
+
+        commandManager.registerCommand(new MMOCommand(this));
     }
 
     public EffectChecker getChecker() {

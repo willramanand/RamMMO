@@ -99,11 +99,21 @@ public class VersionListener implements Listener {
                         converted = true;
                         player.getInventory().remove(item);
                         switch (slot) {
-                            case 0 -> player.getInventory().setHelmet(newItem);
-                            case 1 -> player.getInventory().setChestplate(newItem);
-                            case 2 -> player.getInventory().setLeggings(newItem);
-                            case 3 -> player.getInventory().setBoots(newItem);
-                            case 4 -> player.getInventory().setItemInOffHand(newItem);
+                            case 0:
+                                player.getInventory().setHelmet(newItem);
+                                break;
+                            case 1:
+                                player.getInventory().setChestplate(newItem);
+                                break;
+                            case 2:
+                                player.getInventory().setLeggings(newItem);
+                                break;
+                            case 3:
+                                player.getInventory().setBoots(newItem);
+                                break;
+                            case 4:
+                                player.getInventory().setItemInOffHand(newItem);
+                                break;
                         }
                     }
                 }

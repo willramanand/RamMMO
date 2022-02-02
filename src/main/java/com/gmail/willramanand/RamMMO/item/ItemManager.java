@@ -1,7 +1,7 @@
 package com.gmail.willramanand.RamMMO.item;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
-import com.gmail.willramanand.RamMMO.item.items.*;
+import com.gmail.willramanand.RamMMO.item.items.BaseItem;
 import com.gmail.willramanand.RamMMO.item.items.armors.*;
 import com.gmail.willramanand.RamMMO.item.items.materials.*;
 import com.gmail.willramanand.RamMMO.item.items.tools.*;
