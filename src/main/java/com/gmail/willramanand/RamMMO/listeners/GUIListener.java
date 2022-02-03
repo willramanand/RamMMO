@@ -6,7 +6,9 @@ import com.gmail.willramanand.RamMMO.enums.Passives;
 import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import com.gmail.willramanand.RamMMO.ui.ItemsScreen;
 import com.gmail.willramanand.RamMMO.ui.PassivesScreen;
+import com.gmail.willramanand.RamMMO.ui.uiitems.InventoryItem;
 import com.gmail.willramanand.RamMMO.utils.DataUtils;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -66,9 +68,10 @@ public class GUIListener implements Listener {
                 } else if (!(mmoPlayer.getPassives(selectPass))) {
                     mmoPlayer.setPassives(selectPass, true);
                 }
-                player.closeInventory();
-                PassivesScreen passivesScreen = new PassivesScreen(plugin, player);
-                player.openInventory(passivesScreen.getInventory());
+                int slot = e.getSlot();
+                Material type = e.getCurrentItem().getType();
+                e.getClickedInventory().removeItem(e.getCurrentItem());
+                e.getClickedInventory().setItem(slot, InventoryItem.getPassiveItem(selectPass, type, player));
             } else if (DataUtils.has(e.getCurrentItem().getItemMeta(), "close_button")) {
                 player.closeInventory();
             }
