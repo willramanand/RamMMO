@@ -309,6 +309,7 @@ public class ItemListener implements Listener {
     @EventHandler
     public void spawnHorse(PlayerInteractEvent e) {
         if (!(e.hasItem()) && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (e.getItem() == null) return;
         if (!(DataUtils.has(e.getItem().getItemMeta(), "apocalypseegg"))) return;
         e.getPlayer().getLocation().getWorld().spawn(e.getPlayer().getLocation(), SkeletonHorse.class, horse -> {
             horse.setTamed(true);

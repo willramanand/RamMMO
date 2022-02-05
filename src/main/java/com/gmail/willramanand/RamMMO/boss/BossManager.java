@@ -11,13 +11,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -54,11 +52,11 @@ public class BossManager {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (isActive()) return;
                 Bosses boss = null;
                 while (boss == null || boss == currentBossType) {
                     boss = Bosses.randomBoss();
                 }
-                if (isActive()) return;
                 isActive = true;
                 currentBossType = boss;
                 currentBoss = (LivingEntity) bosses.get(currentBossType).spawn(generateLocation(boss));
@@ -85,7 +83,9 @@ public class BossManager {
         return location;
     }
 
-    public static Bosses getBoss(String displayName) { return bossRegistry.get(displayName); }
+    public static Bosses getBoss(String displayName) {
+        return bossRegistry.get(displayName);
+    }
 
     public static LivingEntity getCurrentBoss() {
         return currentBoss;
@@ -103,22 +103,20 @@ public class BossManager {
         isActive = setActive;
     }
 
-    ;
-
     public static void updateBossBar() {
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (bossBar == null) return;
-                List<Entity> nearbyPlayers = currentBoss.getNearbyEntities(30, 30, 30).stream().filter(entity -> entity instanceof Player).toList();
-
+                bossBar.setVisible(true);
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (!(nearbyPlayers.contains(player)) && bossBar.getPlayers().contains(player)) {
-                        bossBar.removePlayer(player);
-                    } else if (nearbyPlayers.contains(player) && !(bossBar.getPlayers().contains(player))) {
-                        bossBar.addPlayer(player);
-                    }
+                    bossBar.removePlayer(player);
                 }
+                currentBoss.getNearbyEntities(50, 50, 50).forEach(entity -> {
+                    if (entity instanceof Player) {
+                        bossBar.addPlayer((Player) entity);
+                    }
+                });
             }
         }.runTaskTimer(RamMMO.getInstance(), 0, 2);
     }
