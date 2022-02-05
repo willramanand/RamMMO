@@ -12,6 +12,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -225,6 +227,7 @@ public class ItemListener implements Listener {
             face = event.getBlockFace();
         }
         Material blockType = block.getType();
+        BlockData blockData = block.getBlockData();
 
         ItemStack cost = new ItemStack(blockType, 1);
         for (Location location : BuilderWandUtils.getValidLocations(block.getLocation().add(face.getModX(), face.getModY(), face.getModZ()), face, blockType)) {
@@ -243,6 +246,7 @@ public class ItemListener implements Listener {
             }
             BlockState state = location.getBlock().getState();
             state.setType(blockType);
+            state.setBlockData(blockData);
             BlockPlaceEvent buildEvent = new BlockPlaceEvent(location.getBlock(), state, location.getBlock().getRelative(face.getOppositeFace()), cost, player, true, EquipmentSlot.HAND);
             Bukkit.getPluginManager().callEvent(buildEvent);
 
