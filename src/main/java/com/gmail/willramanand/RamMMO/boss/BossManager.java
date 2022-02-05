@@ -1,6 +1,7 @@
 package com.gmail.willramanand.RamMMO.boss;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.boss.bosses.EnderPriest;
 import com.gmail.willramanand.RamMMO.boss.bosses.HeadlessHorseman;
 import com.gmail.willramanand.RamMMO.boss.bosses.TheGhost;
 import com.gmail.willramanand.RamMMO.boss.bosses.TheMinotaur;
@@ -33,6 +34,7 @@ public class BossManager {
         bosses.put(Bosses.HEADLESS_HORSEMAN, new HeadlessHorseman());
         bosses.put(Bosses.THE_MINOTAUR, new TheMinotaur());
         bosses.put(Bosses.THE_GHOST, new TheGhost());
+        bosses.put(Bosses.ENDER_PRIEST, new EnderPriest());
 
         for (Bosses boss : Bosses.values()) {
             bossRegistry.put(boss.name().toLowerCase(), boss);

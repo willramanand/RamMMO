@@ -5,15 +5,15 @@ import com.gmail.willramanand.RamMMO.item.Item;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.utils.DataUtils;
 import com.google.common.collect.ImmutableList;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.event.inventory.PrepareSmithingEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.SmithingRecipe;
+import org.bukkit.event.inventory.*;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.*;
 
@@ -31,6 +31,7 @@ public class CraftingListener implements Listener {
     public void netherfireElytra(PrepareItemCraftEvent event) {
         boolean chestplate = false;
         boolean elytra = false;
+        boolean isUnbreakable = false;
 
         Set<ItemStack> itemStackSet = new HashSet<>();
         Set<Enchantment> newEnchants = new HashSet<>();
@@ -43,12 +44,14 @@ public class CraftingListener implements Listener {
                     newEnchants.add(enchantment);
                     enchantLvls.put(enchantment, item.getItemMeta().getEnchantLevel(enchantment));
                 });
+                isUnbreakable = item.getItemMeta().isUnbreakable();
                 chestplate = true;
             } else if (item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(plugin, Item.EMPOWERED_ELYTRA.getClassName()))) {
                 item.getItemMeta().getEnchants().keySet().forEach(enchantment -> {
                     newEnchants.add(enchantment);
                     enchantLvls.put(enchantment, item.getItemMeta().getEnchantLevel(enchantment));
                 });
+                isUnbreakable = item.getItemMeta().isUnbreakable();
                 elytra = true;
             }
             itemStackSet.add(item);
@@ -60,6 +63,11 @@ public class CraftingListener implements Listener {
                 if (meta.hasEnchant(enchantment)) continue;
                 meta.addEnchant(enchantment, enchantLvls.get(enchantment), true);
             }
+
+            if (isUnbreakable) {
+                meta.setUnbreakable(true);
+            }
+
             ItemStack newItem = new ItemStack(ItemManager.getItem(Item.NETHERFIRE_ELYTRA));
             newItem.setItemMeta(meta);
             event.getInventory().setResult(newItem);
@@ -68,7 +76,6 @@ public class CraftingListener implements Listener {
 
     @EventHandler
     public void smithingRecipes(PrepareSmithingEvent event) {
-
         if (event.getInventory().getRecipe() == null) return;
         Item selected = null;
         for (Item item : validSmithItems) {
@@ -93,11 +100,56 @@ public class CraftingListener implements Listener {
 
         ItemStack newItem = new ItemStack(ItemManager.getItem(selected));
         ItemMeta meta = newItem.getItemMeta();
+
+        if (event.getInventory().getInputEquipment().getItemMeta().isUnbreakable()) {
+            meta.setUnbreakable(true);
+        }
+
         for (Enchantment enchantment : newEnchants) {
             if (meta.hasEnchant(enchantment)) continue;
             meta.addEnchant(enchantment, enchantLvls.get(enchantment), true);
         }
         newItem.setItemMeta(meta);
         event.setResult(newItem);
+    }
+
+    @EventHandler
+    public void unbreakableRecipes(PrepareSmithingEvent event) {
+        if (event.getInventory().getInputMineral() == null || !(DataUtils.has(event.getInventory().getInputMineral().getItemMeta(), "minotaurhide")))
+            return;
+        if (event.getInventory().getInputEquipment() == null) return;
+        if (event.getInventory().getInputEquipment().getItemMeta().isUnbreakable()) return;
+        ItemStack item = new ItemStack(event.getInventory().getInputEquipment());
+        ItemMeta meta = item.getItemMeta();
+        meta.setUnbreakable(true);
+        item.setItemMeta(meta);
+        event.setResult(item);
+    }
+
+    @EventHandler
+    public void checkUnbreakableSmith(PrepareSmithingEvent event) {
+        if (event.getInventory().getRecipe() == null || event.getResult() == null) return;
+        if (event.getInventory().getInputEquipment().getItemMeta().isUnbreakable()) {
+            ItemStack item = new ItemStack(event.getResult());
+            ItemMeta meta = item.getItemMeta();
+            meta.setUnbreakable(true);
+            event.setResult(item);
+        }
+    }
+
+    @EventHandler
+    public void smithItem(InventoryClickEvent e) {
+        if (e.getClickedInventory() == null || e.getClickedInventory().getType() != InventoryType.SMITHING) return;
+        if (e.getSlotType() != InventoryType.SlotType.RESULT) return;
+        if (e.getCurrentItem() == null) return;
+        SmithingInventory inv = (SmithingInventory) e.getClickedInventory();
+
+        if (!(DataUtils.has(inv.getInputMineral().getItemMeta(), "minotaurhide"))) return;
+
+        ItemStack item = new ItemStack(e.getCurrentItem());
+        e.getWhoClicked().getInventory().addItem(item);
+        inv.setInputEquipment(null);
+        inv.getInputMineral().setAmount(inv.getInputMineral().getAmount() - 1);
+        inv.setResult(null);
     }
 }

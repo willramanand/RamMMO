@@ -22,7 +22,9 @@ public class TheMinotaur extends BaseBoss {
         entity.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(30);
         entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1);
         entity.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(15);
-        entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(50);
+        entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(75);
+
+        entity.setRemoveWhenFarAway(false);
     }
 
     @Override
@@ -40,6 +42,7 @@ public class TheMinotaur extends BaseBoss {
                 evoker.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(80);
                 evoker.setHealth(evoker.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
                 evoker.setCustomName(ColorUtils.colorMessage("&3Minotaur's Servant"));
+                evoker.setRemoveWhenFarAway(false);
             });
         }
     }

@@ -7,6 +7,7 @@ public enum Bosses {
     HEADLESS_HORSEMAN("&4The Headless Horseman"),
     THE_MINOTAUR("&4The Minotaur"),
     THE_GHOST("&4The Ghost"),
+    ENDER_PRIEST("&4The Ender Priest"),
 
     ;
 
@@ -27,5 +28,12 @@ public enum Bosses {
 
     public static Bosses randomBoss() {
         return VALUES.get(RANDOM.nextInt(SIZE));
+    }
+
+    public static Bosses matchBoss(String name) {
+        for (Bosses bosses : values()) {
+            if (bosses.name().toLowerCase().equalsIgnoreCase(name)) return bosses;
+        }
+        return null;
     }
 }

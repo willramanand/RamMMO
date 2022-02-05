@@ -25,6 +25,9 @@ public class TheGhost extends BaseBoss {
         entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1);
         entity.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(10);
         entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(100);
+
+        entity.setRemoveWhenFarAway(false);
+
         Phantom phantom = (Phantom) entity;
         phantom.setShouldBurnInDay(false);
         phantom.setSize(5);
@@ -47,6 +50,7 @@ public class TheGhost extends BaseBoss {
                 vex.setCustomName(ColorUtils.colorMessage("&bSickly Soul"));
                 vex.getEquipment().setItemInMainHand(new ItemStack(Material.NETHERITE_SWORD));
                 vex.setSummoner((Mob) entity);
+                vex.setRemoveWhenFarAway(false);
             });
         }
     }

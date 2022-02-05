@@ -5,7 +5,10 @@ import net.kyori.adventure.text.Component;
 public enum Item {
 
     PHANTOM_PLATE("Phantom Plate", "phantomplate", "phantom_plate", 0),
-    FIERY_SCALE("Fiery Scale", "fieryscale", "fiery_scale", 1),
+    FIERY_SCALE("Fiery Scale", "fieryscale", "fiery_scale", 2),
+    MINOTAURS_HIDE("Minotaur's Hide", "minotaurhide", "minotaur_hide", 0),
+    APOCALYPSE_HORSE_EGG("Horse of the Apocalypse Egg", "apocalypseegg", "apocalypse_egg", 0),
+    ENDER_GEM("Ender Gem", "endergem", "ender_gem", 0),
 
     ENCHANTED_NETHERSTAR("Enchanted Netherstar", "enchantednetherstar", "enchanted_netherstar", 1),
     ENCHANTED_GOLD("Enchanted Gold", "enchantedgold", "enchanted_gold", 1),

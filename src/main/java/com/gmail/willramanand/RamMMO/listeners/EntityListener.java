@@ -299,17 +299,6 @@ public class EntityListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPhantomDeath(EntityDeathEvent event) {
-        if (!(event.getEntity() instanceof Phantom)) return;
-
-        int rng = new Random().nextInt(101);
-        int upperBound = 98 - (1 * plugin.getDifficultyUtils().getDifficultyModifier());
-        if (rng >= upperBound) {
-            event.getDrops().add(ItemManager.getItem(Item.PHANTOM_PLATE));
-        }
-    }
-
     private double calcDamageIncrease(int modifier, Entity entity) {
         if (DataUtils.has(entity, "Rarity")) {
             int rarity = DataUtils.get(entity, "Rarity", PersistentDataType.INTEGER);

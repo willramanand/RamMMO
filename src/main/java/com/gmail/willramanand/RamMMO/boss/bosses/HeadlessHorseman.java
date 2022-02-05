@@ -5,6 +5,7 @@ import com.gmail.willramanand.RamMMO.boss.Bosses;
 import com.gmail.willramanand.RamMMO.item.Item;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import com.gmail.willramanand.RamMMO.utils.DataUtils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -14,6 +15,7 @@ import org.bukkit.entity.SkeletonHorse;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public class HeadlessHorseman extends BaseBoss {
 
@@ -29,6 +31,8 @@ public class HeadlessHorseman extends BaseBoss {
         entity.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(5);
         entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1);
         entity.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(5);
+
+        entity.setRemoveWhenFarAway(false);
 
         Skeleton skeleton = (Skeleton) entity;
         skeleton.setShouldBurnInDay(false);
@@ -61,9 +65,11 @@ public class HeadlessHorseman extends BaseBoss {
             horse.addPassenger(entity);
             horse.setCustomName(ColorUtils.colorMessage("&4Horse of the Apocalypse"));
             horse.setCustomNameVisible(true);
+            horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.4);
+            horse.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(10.0);
             horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(200);
-            horse.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(10);
             horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+            horse.setRemoveWhenFarAway(false);
         });
     }
 }

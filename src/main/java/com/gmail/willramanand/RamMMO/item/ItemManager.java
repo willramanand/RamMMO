@@ -3,6 +3,7 @@ package com.gmail.willramanand.RamMMO.item;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.item.items.BaseItem;
 import com.gmail.willramanand.RamMMO.item.items.armors.*;
+import com.gmail.willramanand.RamMMO.item.items.eggs.ApocalypseHorseEgg;
 import com.gmail.willramanand.RamMMO.item.items.materials.*;
 import com.gmail.willramanand.RamMMO.item.items.tools.*;
 import org.bukkit.Bukkit;
@@ -26,6 +27,9 @@ public class ItemManager {
         // Special Materials
         items.put(Item.PHANTOM_PLATE, new PhantomPlate());
         items.put(Item.FIERY_SCALE, new FieryScale());
+        items.put(Item.MINOTAURS_HIDE, new MinotaursHide());
+        items.put(Item.APOCALYPSE_HORSE_EGG, new ApocalypseHorseEgg());
+        items.put(Item.ENDER_GEM, new EnderGem());
 
         // Upgraded Materials
         items.put(Item.ENCHANTED_GOLD, new EnchantedGold());

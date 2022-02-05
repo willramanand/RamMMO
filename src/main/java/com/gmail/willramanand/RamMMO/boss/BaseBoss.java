@@ -2,6 +2,7 @@ package com.gmail.willramanand.RamMMO.boss;
 
 import com.gmail.willramanand.RamMMO.utils.BossUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import com.gmail.willramanand.RamMMO.utils.DataUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.boss.BarColor;
@@ -10,6 +11,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.persistence.PersistentDataType;
 
 public abstract class BaseBoss {
 
@@ -30,6 +32,7 @@ public abstract class BaseBoss {
                 BossUtils.setBoss(livingEntity, type);
                 setAttributes(livingEntity);
                 setDisplayName(livingEntity);
+                DataUtils.set(livingEntity, "boss_type", PersistentDataType.STRING, type.name().toLowerCase());
                 setTags(livingEntity);
                 setEquipment(livingEntity);
                 setBossBar();

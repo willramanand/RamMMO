@@ -2,24 +2,32 @@ package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.boss.BossManager;
+import com.gmail.willramanand.RamMMO.boss.Bosses;
+import com.gmail.willramanand.RamMMO.item.Item;
+import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.utils.BossUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import com.gmail.willramanand.RamMMO.utils.DataUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 public class BossListener implements Listener {
 
@@ -31,8 +39,9 @@ public class BossListener implements Listener {
 
     @EventHandler
     public void onBossSpawn(CreatureSpawnEvent event) {
-        if (BossUtils.isBoss(event.getEntity()))
+        if (BossUtils.isBoss(event.getEntity()) && !(DataUtils.has(event.getEntity(), "prevent_regen"))) {
             event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 99999, 2, false));
+        }
     }
 
     @EventHandler
@@ -100,11 +109,31 @@ public class BossListener implements Listener {
         for (Entity entity : nearbyPlayers) {
             if (entity instanceof Player) {
                 Player player = (Player) entity;
+                Bosses bosses = Bosses.matchBoss(DataUtils.get(boss, "boss_type", PersistentDataType.STRING));
 
+                // Always rewarded
                 player.sendMessage(ColorUtils.colorMessage("&6Your heroics have been rewarded!"));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.HERO_OF_THE_VILLAGE, 36000, 4, false));
+                player.getInventory().addItem(new ItemStack(ItemManager.getItem(Item.ENCHANTED_NETHERITE_BLOCK)));
                 if (RamMMO.getEconomy().hasAccount(player)) {
                     RamMMO.getEconomy().depositPlayer(player, 100000);
+                }
+
+                // RNG Rewards
+                int rng = new Random().nextInt(101);
+                int upperBound = 80 - (2 * plugin.getDifficultyUtils().getDifficultyModifier());
+                if (rng >= upperBound) {
+                    if (bosses == Bosses.HEADLESS_HORSEMAN) {
+                        player.getInventory().addItem(new ItemStack(ItemManager.getItem(Item.APOCALYPSE_HORSE_EGG)));
+                    } else if (bosses == Bosses.THE_MINOTAUR) {
+                        player.getInventory().addItem(new ItemStack(ItemManager.getItem(Item.MINOTAURS_HIDE)));
+                    } else if (bosses == Bosses.THE_GHOST) {
+                        player.getInventory().addItem(new ItemStack(ItemManager.getItem(Item.PHANTOM_PLATE)));
+                    } else if (bosses == Bosses.ENDER_PRIEST) {
+                        player.getInventory().addItem(new ItemStack(ItemManager.getItem(Item.ENDER_GEM)));
+                    } else {
+                        player.getInventory().addItem(new ItemStack(ItemManager.getItem(Item.ENCHANTED_DIAMOND_BLOCK)));
+                    }
                 }
             }
         }
@@ -122,6 +151,7 @@ public class BossListener implements Listener {
         double damage = (arrow.getDamage() * 5) + 40;
         arrow.setDamage(damage);
     }
+
 
     private boolean isFireEffect(EntityDamageEvent.DamageCause cause) {
         List<EntityDamageEvent.DamageCause> fireDamage = new ArrayList<>();

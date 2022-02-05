@@ -7,14 +7,12 @@ import com.gmail.willramanand.RamMMO.utils.DataUtils;
 import com.gmail.willramanand.RamSkills.RamSkills;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -306,6 +304,34 @@ public class ItemListener implements Listener {
             player.getWorld().setThundering(false);
         }
         setDownpourPaused(player, 600);
+    }
+
+    @EventHandler
+    public void spawnHorse(PlayerInteractEvent e) {
+        if (!(e.hasItem()) && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (!(DataUtils.has(e.getItem().getItemMeta(), "apocalypseegg"))) return;
+        e.getPlayer().getLocation().getWorld().spawn(e.getPlayer().getLocation(), SkeletonHorse.class, horse -> {
+            horse.setTamed(true);
+            horse.setCustomName(ColorUtils.colorMessage("&4Horse of the Apocalypse"));
+            horse.setCustomNameVisible(true);
+            horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.4);
+            horse.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(10.0);
+            horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(200);
+            horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+            horse.setRemoveWhenFarAway(false);
+        });
+        e.getPlayer().getInventory().remove(e.getItem());
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void reusabledPearl(PlayerInteractEvent e) {
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.RIGHT_CLICK_AIR) return;
+        if (e.getItem() == null) return;
+        if (!(DataUtils.has(e.getItem().getItemMeta(), "endergem"))) return;
+        e.setCancelled(true);
+        EnderPearl ep = e.getPlayer().launchProjectile(EnderPearl.class);
+        e.getPlayer().playSound(ep.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1.0f, 1.0f);
     }
 
     public void setWandPaused(Player player, int ticks) {
