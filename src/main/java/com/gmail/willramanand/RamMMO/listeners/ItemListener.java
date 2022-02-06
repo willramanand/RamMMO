@@ -1,6 +1,7 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
 import com.gmail.willramanand.RamMMO.RamMMO;
+import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.utils.BuilderWandUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import com.gmail.willramanand.RamMMO.utils.DataUtils;
@@ -29,12 +30,15 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class ItemListener implements Listener {
 
@@ -238,7 +242,7 @@ public class ItemListener implements Listener {
                 continue;
             }
 
-            boolean hasItem = true;
+            boolean hasItem;
             if (player.getGameMode() == GameMode.CREATIVE || player.getInventory().containsAtLeast(cost, 1)) {
                 hasItem = player.getGameMode() != GameMode.CREATIVE;
             } else {
@@ -330,13 +334,62 @@ public class ItemListener implements Listener {
     }
 
     @EventHandler
-    public void reusabledPearl(PlayerInteractEvent e) {
+    public void activateGem (PlayerInteractEvent e) {
         if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.RIGHT_CLICK_AIR) return;
         if (e.getItem() == null) return;
-        if (!(DataUtils.has(e.getItem().getItemMeta(), "endergem"))) return;
-        e.setCancelled(true);
-        EnderPearl ep = e.getPlayer().launchProjectile(EnderPearl.class);
-        e.getPlayer().playSound(ep.getLocation(), Sound.ENTITY_ARROW_SHOOT, 1.0f, 1.0f);
+        if (DataUtils.has(e.getItem().getItemMeta(), "endergem")) {
+            e.getPlayer().getInventory().remove(e.getItem());
+            e.getPlayer().getInventory().setItemInMainHand(new ItemStack(ItemManager.getItem(com.gmail.willramanand.RamMMO.item.Item.ACTIVE_ENDER_GEM)));
+            e.setCancelled(true);
+        } else if (DataUtils.has(e.getItem().getItemMeta(), "activeendergem")) {
+            e.getPlayer().getInventory().remove(e.getItem());
+            e.getPlayer().getInventory().setItemInMainHand(new ItemStack(ItemManager.getItem(com.gmail.willramanand.RamMMO.item.Item.ENDER_GEM)));
+            e.setCancelled(true);
+        }
+    }
+
+    public void itemMagnetSearch() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                double magnetDistanceSq = 100;
+
+                for (World world : getServer().getWorlds()) {
+                    List<Player> players = world.getPlayers();
+                    // No players in this world, nobody to pick items up
+                    if (players.isEmpty()) {
+                        continue;
+                    }
+
+                    for (Item item : world.getEntitiesByClass(Item.class)) {
+                        Location itemLocation = item.getLocation();
+
+                        // Make sure we don't pick up items we just threw on the ground
+                        if (item.getPickupDelay() > item.getTicksLived()) {
+                            continue;
+                        }
+
+                        // Find the closest player to the item, within magnet distance
+                        Player closestPlayer = null;
+                        double closestPlayerDistance = Double.MAX_VALUE;
+                        for (Player player : players) {
+                            boolean hasActive = player.getInventory().contains(ItemManager.getItem(com.gmail.willramanand.RamMMO.item.Item.ACTIVE_ENDER_GEM));
+                            if (!(hasActive)) continue;
+
+                            double playerDistance = player.getLocation().distanceSquared(itemLocation);
+                            if (playerDistance <= magnetDistanceSq && playerDistance < closestPlayerDistance) {
+                                closestPlayerDistance = playerDistance;
+                                closestPlayer = player;
+                            }
+                        }
+
+                        if (closestPlayer != null) {
+                            item.setVelocity(closestPlayer.getLocation().toVector().subtract(itemLocation.toVector()).normalize());
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(RamMMO.getInstance(), 0, 2);
     }
 
     public void setWandPaused(Player player, int ticks) {

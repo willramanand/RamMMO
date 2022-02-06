@@ -60,6 +60,7 @@ public class RamMMO extends JavaPlugin {
         configManager = new ConfigManager(this);
         playerManager = new PlayerManager(this);
         difficultyUtils = new DifficultyUtils(this);
+        ItemListener itemListener = new ItemListener(this);
 
         // Config
         this.getConfig().options().copyDefaults(true);
@@ -69,6 +70,9 @@ public class RamMMO extends JavaPlugin {
         // Custom Items
         ItemManager.registerItems();
         ItemManager.buildExtraRecipes();
+
+        // Listener runnables
+        itemListener.itemMagnetSearch();
 
         // Bosses
         BossManager.registerBosses();
@@ -84,7 +88,7 @@ public class RamMMO extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
         Bukkit.getPluginManager().registerEvents(new EntityListener(this), this);
         Bukkit.getPluginManager().registerEvents(new HealthListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new ItemListener(this), this);
+        Bukkit.getPluginManager().registerEvents(itemListener, this);
         Bukkit.getPluginManager().registerEvents(new DamageIndicatorListener(this), this);
         Bukkit.getPluginManager().registerEvents(new VersionListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CraftingListener(this), this);

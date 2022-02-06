@@ -30,6 +30,7 @@ public class ItemManager {
         items.put(Item.MINOTAURS_HIDE, new MinotaursHide());
         items.put(Item.APOCALYPSE_HORSE_EGG, new ApocalypseHorseEgg());
         items.put(Item.ENDER_GEM, new EnderGem());
+        items.put(Item.ACTIVE_ENDER_GEM, new ActiveEnderGem());
 
         // Upgraded Materials
         items.put(Item.ENCHANTED_GOLD, new EnchantedGold());
