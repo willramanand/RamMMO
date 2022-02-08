@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.*;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.boss.BossManager;
 import com.gmail.willramanand.RamMMO.boss.Bosses;
+import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import com.gmail.willramanand.RamMMO.ui.ItemsScreen;
 import com.gmail.willramanand.RamMMO.ui.PassivesScreen;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
@@ -45,7 +46,9 @@ public class MMOCommand extends BaseCommand {
     @Subcommand("mobs")
     @Description("Show the mobtiers and difficulty modifier")
     public void onMobs(Player player) {
-        player.sendMessage(ColorUtils.colorMessage("&eCurrent Global Difficulty modifier: &d" + plugin.getDifficultyUtils().getDifficultyModifier()));
+        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
+
+        player.sendMessage(ColorUtils.colorMessage("&eCurrent Personal Difficulty modifier: &d" + mmoPlayer.getPersonalDifficulty()));
         player.sendMessage(ColorUtils.colorMessage("&eMobs can now spawn at &d5 &edifferent tiers within the wild!"));
         player.sendMessage(ColorUtils.colorMessage("&fCommon Mobs: &eThese are your standard mobs."));
         player.sendMessage(ColorUtils.colorMessage("&2Uncommon Mobs: &a+50% &espeed, &a2x &edamage, &a2x &ehealth."));

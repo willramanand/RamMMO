@@ -4,6 +4,7 @@ import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.item.Item;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.mobs.MobTier;
+import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import com.gmail.willramanand.RamMMO.utils.BossUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import com.gmail.willramanand.RamMMO.utils.DataUtils;
@@ -33,25 +34,25 @@ import java.util.Random;
 
 public class EntityListener implements Listener {
 
-    private final double COMMON_MONEY = 0.05;
+    private final double COMMON_MONEY = 0.25;
 
     private final double UNCOMMON_XP = 2.5;
     private final int UNCOMMON_DROP = 2;
-    private final double UNCOMMON_MONEY = 0.75;
+    private final double UNCOMMON_MONEY = 7.50;
 
     private final double RARE_XP = 5;
     private final int RARE_DROP = 4;
-    private final double RARE_MONEY = 1.25;
+    private final double RARE_MONEY = 10.25;
 
     private final double EPIC_XP = 15;
     private final int EPIC_DROP = 8;
-    private final double EPIC_MONEY = 5.0;
+    private final double EPIC_MONEY = 50.0;
 
     private final double LEGEND_XP = 25;
     private final int LEGEND_DROP = 16;
-    private final double LEGEND_MONEY = 25.0;
+    private final double LEGEND_MONEY = 250.0;
 
-    private final double BOSS_MONEY = 250.0;
+    private final double BOSS_MONEY = 25000.0;
 
     private final RamMMO plugin;
     private final Economy econ;
@@ -59,94 +60,6 @@ public class EntityListener implements Listener {
     public EntityListener(RamMMO plugin) {
         this.plugin = plugin;
         econ = RamMMO.getEconomy();
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void addModifier(CreatureSpawnEvent event) {
-        LivingEntity entity = event.getEntity();
-
-        int modifier = plugin.getDifficultyUtils().getDifficultyModifier();
-        if (modifier <= 0) return;
-
-        if (!(entity instanceof Monster) && !(entity instanceof Boss)) return;
-        if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NETHER_PORTAL) return;
-
-        AttributeModifier multMod = new AttributeModifier("difficulty_multiplier", modifier, AttributeModifier.Operation.MULTIPLY_SCALAR_1);
-        AttributeModifier addMod = new AttributeModifier("difficulty_add", modifier, AttributeModifier.Operation.ADD_NUMBER);
-
-        if (!(entity instanceof Boss)) {
-            entity.getAttribute(Attribute.GENERIC_ARMOR).addModifier(addMod);
-            entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).addModifier(multMod);
-        } else if (entity instanceof EnderDragon) {
-            double health = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-            double armor = entity.getAttribute(Attribute.GENERIC_ARMOR).getBaseValue();
-
-            entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health * modifier);
-            entity.setHealth(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-            entity.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(armor + modifier);
-            entity.setCustomName(entity.getName() + plugin.getDifficultyUtils().getBossStars());
-        } else if (entity instanceof Wither) {
-
-            double health = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-            double armor = entity.getAttribute(Attribute.GENERIC_ARMOR).getBaseValue();
-            double damage = entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue();
-
-            entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health * modifier);
-            entity.setHealth(entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-            entity.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(armor + modifier);
-            entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(damage * modifier);
-            entity.setCustomName(entity.getName() + plugin.getDifficultyUtils().getBossStars());
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void boostMobProjectile(ProjectileLaunchEvent event) {
-        if (!(event.getEntity().getShooter() instanceof Monster)) return;
-        if (!(event.getEntity() instanceof AbstractArrow)) return;
-        AbstractArrow arrow = (AbstractArrow) event.getEntity();
-        Entity entity = (Entity) event.getEntity().getShooter();
-
-        int modifier = plugin.getDifficultyUtils().getDifficultyModifier();
-
-        double damageIncrease = calcDamageIncrease(modifier, entity);
-        arrow.setDamage(arrow.getDamage() * damageIncrease);
-    }
-
-    @EventHandler
-    public void boostMobExplosion(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof LivingEntity)) return;
-        if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) return;
-        if (!(event.getDamager() instanceof Monster)) return;
-
-        int modifier = plugin.getDifficultyUtils().getDifficultyModifier() * 2;
-
-        Entity entity = event.getDamager();
-
-        double damageIncrease = calcDamageIncrease(modifier, entity);
-        event.setDamage(event.getFinalDamage() * damageIncrease);
-    }
-
-    @EventHandler
-    public void boostBossProjectile(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Projectile)) return;
-        Projectile projectile = (Projectile) event.getDamager();
-        if (!(projectile.getShooter() instanceof Boss)) return;
-
-        int modifier = plugin.getDifficultyUtils().getDifficultyModifier() * 3;
-
-        Entity entity = event.getDamager();
-
-        double damageIncrease = calcDamageIncrease(modifier, entity);
-        event.setDamage(event.getFinalDamage() * damageIncrease);
-    }
-
-    @EventHandler
-    public void boostBossBreath(EntityDamageEvent event) {
-        if (event.getCause() != EntityDamageEvent.DamageCause.DRAGON_BREATH) return;
-        int modifier = plugin.getDifficultyUtils().getDifficultyModifier() * 5;
-
-        double damageIncrease = 1 + modifier;
-        event.setDamage(event.getFinalDamage() * damageIncrease);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -180,14 +93,20 @@ public class EntityListener implements Listener {
     public void onDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
         int xp = event.getDroppedExp();
-        int modifier = 1 + plugin.getDifficultyUtils().getDifficultyModifier();
         List<ItemStack> droppedItems = event.getDrops();
 
-        if (event.getEntity().getKiller() == null || !(plugin.isVaultActive()) || !(econ.hasAccount(event.getEntity().getKiller()))) {
+        if (event.getEntity().getKiller() == null) {
             return;
         }
 
         Player player = event.getEntity().getKiller();
+        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
+        int modifier = 1 + mmoPlayer.getPersonalDifficulty();
+
+
+        if (!(plugin.isVaultActive()) || !(econ.hasAccount(event.getEntity().getKiller()))) {
+            return;
+        }
 
         if (!(entity instanceof Monster) && !(entity instanceof Boss)) return;
 
@@ -234,10 +153,8 @@ public class EntityListener implements Listener {
             event.setDroppedExp((int) xpMult * xp);
             for (ItemStack item : droppedItems) {
                 for (int i = 0; i < dropMult; i++) {
-                    if (!(EnchantmentTarget.ARMOR.includes(item)) && !(EnchantmentTarget.TOOL.includes(item))
-                            && !(EnchantmentTarget.BOW.includes(item)) && !(EnchantmentTarget.WEAPON.includes(item)))
+                    if (!(EnchantmentTarget.ARMOR.includes(item)) && !(EnchantmentTarget.TOOL.includes(item)) && !(EnchantmentTarget.BOW.includes(item)) && !(EnchantmentTarget.WEAPON.includes(item)))
                         event.getEntity().getWorld().dropItem(entity.getLocation(), item);
-                    ;
                 }
             }
         } else {
@@ -245,6 +162,12 @@ public class EntityListener implements Listener {
                 econ.depositPlayer(player, BOSS_MONEY * modifier);
             } else {
                 econ.depositPlayer(player, COMMON_MONEY * modifier);
+            }
+            for (ItemStack item : droppedItems) {
+                for (int i = 0; i < modifier; i++) {
+                    if (!(EnchantmentTarget.ARMOR.includes(item)) && !(EnchantmentTarget.TOOL.includes(item)) && !(EnchantmentTarget.BOW.includes(item)) && !(EnchantmentTarget.WEAPON.includes(item)))
+                        event.getEntity().getWorld().dropItem(entity.getLocation(), item);
+                }
             }
             event.setDroppedExp(modifier * xp);
         }
@@ -277,10 +200,19 @@ public class EntityListener implements Listener {
     public void onDragonDeath(EntityDeathEvent event) {
         if (!(event.getEntity() instanceof EnderDragon)) return;
 
-        plugin.getDifficultyUtils().addDefeat();
+        if (event.getEntity().getKiller() == null) return;
+
+        Player killer = (Player) event.getEntity().getKiller();
+        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(killer);
+
+        int newDifficulty = mmoPlayer.getPersonalDifficulty() + 1;
+        if (newDifficulty <= 5) {
+            mmoPlayer.setPersonalDifficulty(newDifficulty);
+            killer.sendMessage(ColorUtils.colorMessage("&6The world grows harder to match your might!"));
+        }
 
         int rng = new Random().nextInt(101);
-        int upperBound = 80 - (2 * plugin.getDifficultyUtils().getDifficultyModifier());
+        int upperBound = 80 - (2 * mmoPlayer.getPersonalDifficulty());
         if (rng >= upperBound) {
             event.getEntity().getKiller().sendMessage(ColorUtils.colorMessage("&eYou have received a &4Fiery Scale&e!"));
             event.getEntity().getKiller().getInventory().addItem(ItemManager.getItem(Item.FIERY_SCALE));
@@ -291,50 +223,74 @@ public class EntityListener implements Listener {
     public void onWitherDeath(EntityDeathEvent event) {
         if (!(event.getEntity() instanceof Wither)) return;
 
+        if (event.getEntity().getKiller() == null) return;
+
+        Player killer = (Player) event.getEntity().getKiller();
+        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(killer);
+
         int rng = new Random().nextInt(101);
-        int upperBound = 100 - (2 * plugin.getDifficultyUtils().getDifficultyModifier());
+        int upperBound = 100 - (2 * mmoPlayer.getPersonalDifficulty());
 
         if (rng >= upperBound) {
             event.getEntity().getWorld().dropItemNaturally(event.getEntity().getLocation(), ItemManager.getItem(Item.ENCHANTED_NETHERSTAR));
         }
     }
 
-    private double calcDamageIncrease(int modifier, Entity entity) {
-        if (DataUtils.has(entity, "Rarity")) {
-            int rarity = DataUtils.get(entity, "Rarity", PersistentDataType.INTEGER);
+    @EventHandler
+    public void changePersonalDamageReceived(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player)) return;
+        if (event.getDamager() instanceof Boss) return;
 
-            if (modifier <= 0) {
-                switch (rarity) {
-                    case 1:
-                        modifier += MobTier.UNCOMMON.getDamageMult();
-                        break;
-                    case 2:
-                        modifier += MobTier.RARE.getDamageMult();
-                        break;
-                    case 3:
-                        modifier += MobTier.EPIC.getDamageMult();
-                        break;
-                    case 4:
-                        modifier += MobTier.LEGENDARY.getDamageMult();
-                        break;
-                }
-            } else {
-                switch (rarity) {
-                    case 1:
-                        modifier *= MobTier.UNCOMMON.getDamageMult();
-                        break;
-                    case 2:
-                        modifier *= MobTier.RARE.getDamageMult();
-                        break;
-                    case 3:
-                        modifier *= MobTier.EPIC.getDamageMult();
-                        break;
-                    case 4:
-                        modifier *= MobTier.LEGENDARY.getDamageMult();
-                        break;
-                }
-            }
-        }
-        return 1 + modifier;
+        Player player = (Player) event.getEntity();
+        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
+
+        if (mmoPlayer.getPersonalDifficulty() == 0) return;
+
+        double newDamage = event.getFinalDamage() * (1 + mmoPlayer.getPersonalDifficulty());
+        event.setDamage(newDamage);
+    }
+
+    @EventHandler
+    public void changePersonalDamageDealt(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player)) return;
+        if (event.getEntity() instanceof Boss) return;
+
+        Player player = (Player) event.getDamager();
+        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
+
+        if (mmoPlayer.getPersonalDifficulty() == 0) return;
+
+        double damageRed = 1 - (0.05 * (1 + mmoPlayer.getPersonalDifficulty()));
+        double newDamage = event.getFinalDamage() * damageRed;
+        event.setDamage(newDamage);
+    }
+
+    @EventHandler
+    public void changePersonalDamageReceivedBoss(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player)) return;
+        if (!(event.getDamager() instanceof Boss)) return;
+
+        Player player = (Player) event.getEntity();
+        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
+
+        if (mmoPlayer.getPersonalDifficulty() == 0) return;
+
+        double newDamage = event.getFinalDamage() * ((1 + mmoPlayer.getPersonalDifficulty()) * 2);
+        event.setDamage(newDamage);
+    }
+
+    @EventHandler
+    public void changePersonalDamageDealtBoss(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player)) return;
+        if (!(event.getEntity() instanceof Boss)) return;
+
+        Player player = (Player) event.getDamager();
+        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
+
+        if (mmoPlayer.getPersonalDifficulty() == 0) return;
+
+        double damageRed = 1 - (0.1 * (1 + mmoPlayer.getPersonalDifficulty()));
+        double newDamage = event.getFinalDamage() * damageRed;
+        event.setDamage(newDamage);
     }
 }

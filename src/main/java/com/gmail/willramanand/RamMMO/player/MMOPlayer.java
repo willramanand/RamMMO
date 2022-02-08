@@ -18,6 +18,8 @@ public class MMOPlayer {
     private final Map<Passive, Boolean> passives;
     private final Map<Passive, Integer> passiveLvl;
 
+    private int personalDifficulty;
+
     private boolean saving;
     private boolean shouldSave;
 
@@ -25,6 +27,7 @@ public class MMOPlayer {
         this.plugin = plugin;
         this.player = player;
         this.uuid = this.player.getUniqueId();
+        this.personalDifficulty = 0;
         this.saving = false;
         this.shouldSave = true;
         this.passives = new HashMap<>();
@@ -45,6 +48,14 @@ public class MMOPlayer {
 
     public Boolean getPassives(Passive passive) {
         return passives.getOrDefault(passive, true);
+    }
+
+    public void setPersonalDifficulty(int difficulty) {
+        personalDifficulty = difficulty;
+    }
+
+    public int getPersonalDifficulty() {
+        return personalDifficulty;
     }
 
     public boolean isSaving() {

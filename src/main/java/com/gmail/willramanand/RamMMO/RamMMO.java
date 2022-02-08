@@ -10,7 +10,6 @@ import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.listeners.*;
 import com.gmail.willramanand.RamMMO.player.PlayerManager;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
-import com.gmail.willramanand.RamMMO.utils.DifficultyUtils;
 import com.gmail.willramanand.RamMMO.utils.EffectChecker;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
@@ -32,7 +31,6 @@ public class RamMMO extends JavaPlugin {
     private EffectChecker effectChecker;
     private ConfigManager configManager;
     private PlayerManager playerManager;
-    private DifficultyUtils difficultyUtils;
     private PaperCommandManager commandManager;
     private static Economy econ = null;
     private static Permission perms = null;
@@ -59,13 +57,11 @@ public class RamMMO extends JavaPlugin {
         effectChecker = new EffectChecker(this);
         configManager = new ConfigManager(this);
         playerManager = new PlayerManager(this);
-        difficultyUtils = new DifficultyUtils(this);
         ItemListener itemListener = new ItemListener(this);
 
         // Config
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
-        difficultyUtils.load();
 
         // Custom Items
         ItemManager.registerItems();
@@ -114,7 +110,6 @@ public class RamMMO extends JavaPlugin {
     public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers())
             configManager.save(player, true);
-        difficultyUtils.save();
         if (BossManager.isActive())
             BossManager.getCurrentBoss().damage(99999);
         log.info("Disabled");
@@ -169,8 +164,6 @@ public class RamMMO extends JavaPlugin {
     public PlayerManager getPlayerManager() {
         return playerManager;
     }
-
-    public DifficultyUtils getDifficultyUtils() { return difficultyUtils; }
 
     private boolean setupEconomy() {
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);

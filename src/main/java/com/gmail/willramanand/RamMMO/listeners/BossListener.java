@@ -5,6 +5,7 @@ import com.gmail.willramanand.RamMMO.boss.BossManager;
 import com.gmail.willramanand.RamMMO.boss.Bosses;
 import com.gmail.willramanand.RamMMO.item.Item;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
+import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import com.gmail.willramanand.RamMMO.utils.BossUtils;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
 import com.gmail.willramanand.RamMMO.utils.DataUtils;
@@ -119,9 +120,11 @@ public class BossListener implements Listener {
                     RamMMO.getEconomy().depositPlayer(player, 100000);
                 }
 
+                MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
+
                 // RNG Rewards
                 int rng = new Random().nextInt(101);
-                int upperBound = 80 - (2 * plugin.getDifficultyUtils().getDifficultyModifier());
+                int upperBound = 80 - (2 * mmoPlayer.getPersonalDifficulty());
                 if (rng >= upperBound) {
                     if (bosses == Bosses.HEADLESS_HORSEMAN) {
                         player.getInventory().addItem(new ItemStack(ItemManager.getItem(Item.APOCALYPSE_HORSE_EGG)));

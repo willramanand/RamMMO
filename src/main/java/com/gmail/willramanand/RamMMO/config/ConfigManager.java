@@ -42,6 +42,8 @@ public class ConfigManager {
                         config.set("passives." + passive.name().toLowerCase(), true);
                         mmoPlayer.setPassives(passive, true);
                     }
+
+                    mmoPlayer.setPersonalDifficulty(0);
                     plugin.getPlayerManager().addPlayerData(mmoPlayer);
                     try {
                         config.save(file);
@@ -66,6 +68,9 @@ public class ConfigManager {
                 boolean isEnabled = config.getBoolean("passives." + passive.name().toLowerCase());
                 mmoPlayer.setPassives(passive, isEnabled);
             }
+
+            int difficulty = config.getInt("difficulty");
+            mmoPlayer.setPersonalDifficulty(difficulty);
             plugin.getPlayerManager().addPlayerData(mmoPlayer);
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage(ColorUtils.colorMessage("&bCould not load player config for UUID: " + player.getUniqueId()));
@@ -88,6 +93,9 @@ public class ConfigManager {
                 for (Passive passive : Passives.values()) {
                     config.set("passives." + passive.name().toLowerCase(), mmoPlayer.getPassives(passive));
                 }
+
+                config.set("difficulty", mmoPlayer.getPersonalDifficulty());
+
                 config.save(file);
                 if (isShutdown) {
                     plugin.getPlayerManager().removePlayerData(player.getUniqueId());
