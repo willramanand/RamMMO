@@ -163,13 +163,15 @@ public class EntityListener implements Listener {
             } else {
                 econ.depositPlayer(player, COMMON_MONEY * modifier);
             }
-            for (ItemStack item : droppedItems) {
-                for (int i = 0; i < modifier; i++) {
-                    if (!(EnchantmentTarget.ARMOR.includes(item)) && !(EnchantmentTarget.TOOL.includes(item)) && !(EnchantmentTarget.BOW.includes(item)) && !(EnchantmentTarget.WEAPON.includes(item)))
-                        event.getEntity().getWorld().dropItem(entity.getLocation(), item);
+            if (mmoPlayer.getPersonalDifficulty() > 0) {
+                for (ItemStack item : droppedItems) {
+                    for (int i = 0; i < modifier; i++) {
+                        if (!(EnchantmentTarget.ARMOR.includes(item)) && !(EnchantmentTarget.TOOL.includes(item)) && !(EnchantmentTarget.BOW.includes(item)) && !(EnchantmentTarget.WEAPON.includes(item)))
+                            event.getEntity().getWorld().dropItem(entity.getLocation(), item);
+                    }
                 }
+                event.setDroppedExp(modifier * xp);
             }
-            event.setDroppedExp(modifier * xp);
         }
     }
 
