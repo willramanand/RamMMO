@@ -31,6 +31,7 @@ public class ItemManager {
         items.put(Item.APOCALYPSE_HORSE_EGG, new ApocalypseHorseEgg());
         items.put(Item.ENDER_GEM, new EnderGem());
         items.put(Item.ACTIVE_ENDER_GEM, new ActiveEnderGem());
+        items.put(Item.LEVIATHANS_HEART, new LeviathansHeart());
 
         // Upgraded Materials
         items.put(Item.ENCHANTED_GOLD, new EnchantedGold());
@@ -52,6 +53,7 @@ public class ItemManager {
         items.put(Item.BUILDERS_WAND, new BuilderWand());
         items.put(Item.CHAACS_AXE, new ChaacsAxe());
         items.put(Item.POSEIDONS_TRIDENT, new PoseidonsTrident());
+        items.put(Item.MYTHRIL_DRILL, new MythrilDrill());
 
         // Elytra
         items.put(Item.EMPOWERED_ELYTRA, new EmpoweredElytra());

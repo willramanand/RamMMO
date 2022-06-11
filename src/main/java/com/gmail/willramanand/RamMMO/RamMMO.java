@@ -31,6 +31,7 @@ public class RamMMO extends JavaPlugin {
     private EffectChecker effectChecker;
     private ConfigManager configManager;
     private PlayerManager playerManager;
+    private BossManager bossManager;
     private PaperCommandManager commandManager;
     private static Economy econ = null;
     private static Permission perms = null;
@@ -57,6 +58,7 @@ public class RamMMO extends JavaPlugin {
         effectChecker = new EffectChecker(this);
         configManager = new ConfigManager(this);
         playerManager = new PlayerManager(this);
+        bossManager= new BossManager(this);
         ItemListener itemListener = new ItemListener(this);
 
         // Config
@@ -71,8 +73,8 @@ public class RamMMO extends JavaPlugin {
         itemListener.itemMagnetSearch();
 
         // Bosses
-        BossManager.registerBosses();
-        BossManager.bossSpawnTicker();
+        bossManager.registerBosses();
+        bossManager.bossSpawnTicker();
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (!playerManager.hasPlayerData(p)) {
@@ -110,8 +112,8 @@ public class RamMMO extends JavaPlugin {
     public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers())
             configManager.save(player, true);
-        if (BossManager.isActive())
-            BossManager.getCurrentBoss().damage(99999);
+        if (bossManager.isActive())
+            bossManager.getCurrentBoss().damage(99999);
         log.info("Disabled");
     }
 
@@ -134,7 +136,7 @@ public class RamMMO extends JavaPlugin {
 
         commandManager.getCommandContexts().registerContext(Bosses.class, c -> {
             String input = c.popFirstArg();
-            Bosses boss = BossManager.getBoss(input);
+            Bosses boss = bossManager.getBoss(input);
             if (boss != null) {
                 return boss;
             } else {
@@ -149,7 +151,6 @@ public class RamMMO extends JavaPlugin {
             }
             return values;
         });
-
         commandManager.registerCommand(new MMOCommand(this));
     }
 
@@ -164,6 +165,8 @@ public class RamMMO extends JavaPlugin {
     public PlayerManager getPlayerManager() {
         return playerManager;
     }
+
+    public BossManager getBossManager() { return bossManager; }
 
     private boolean setupEconomy() {
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);

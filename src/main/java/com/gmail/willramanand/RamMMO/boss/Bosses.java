@@ -8,6 +8,8 @@ public enum Bosses {
     THE_MINOTAUR("&4The Minotaur"),
     THE_GHOST("&4The Ghost"),
     ENDER_PRIEST("&4The Ender Priest"),
+    THE_COLOSSUS("&4The Colossus"),
+    THE_LEVIATHAN("&4The Leviathan"),
 
     ;
 

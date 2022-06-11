@@ -1,5 +1,7 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
+import com.destroystokyo.paper.MaterialSetTag;
+import com.destroystokyo.paper.MaterialTags;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
 import com.gmail.willramanand.RamMMO.utils.BuilderWandUtils;
@@ -17,11 +19,9 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -31,6 +31,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -345,6 +347,28 @@ public class ItemListener implements Listener {
             e.getPlayer().getInventory().remove(e.getItem());
             e.getPlayer().getInventory().setItemInMainHand(new ItemStack(ItemManager.getItem(com.gmail.willramanand.RamMMO.item.Item.ENDER_GEM)));
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void mythrilDrillSpeed(BlockDamageEvent e) {
+        if (!(DataUtils.has(e.getPlayer().getInventory().getItemInMainHand().getItemMeta(), "mythrildrill"))) return;
+        if (!(Tag.MINEABLE_PICKAXE.isTagged(e.getBlock().getType()))) return;
+        e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 10, 150, false, false, false));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void mythrilDrill(BlockBreakEvent e) {
+        if (!(DataUtils.has(e.getPlayer().getInventory().getItemInMainHand().getItemMeta(), "mythrildrill"))) return;
+        if (!(Tag.MINEABLE_PICKAXE.isTagged(e.getBlock().getType()))) return;
+        e.setDropItems(false);
+
+        for (ItemStack item : e.getBlock().getDrops()) {
+            if (MaterialTags.ORES.isTagged(e.getBlock())) {
+                item.setAmount(5);
+            } else {
+                item.setAmount(1);
+            }
         }
     }
 

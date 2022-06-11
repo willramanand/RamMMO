@@ -10,8 +10,12 @@ import com.gmail.willramanand.RamMMO.player.MMOPlayer;
 import com.gmail.willramanand.RamMMO.ui.ItemsScreen;
 import com.gmail.willramanand.RamMMO.ui.PassivesScreen;
 import com.gmail.willramanand.RamMMO.utils.ColorUtils;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 @CommandAlias("mmo")
@@ -34,21 +38,26 @@ public class MMOCommand extends BaseCommand {
     @Subcommand("locateboss")
     @Description("Show the location of the current boss")
     public void onLocate(Player player) {
-        Location bossLoc = BossManager.getBossLocation();
-        if (bossLoc == null) {
+        if (plugin.getBossManager().getCurrentBoss() == null) {
             player.sendMessage(ColorUtils.colorMessage("&6No boss in the world!"));
         } else {
-            player.sendMessage(ColorUtils.colorMessage(String.format("%s &6has been spotted in World:&d %s &6at coords:&d %d, %d, %d", BossManager.getCurrentBoss().getCustomName(), bossLoc.getWorld().
-                    getName(), bossLoc.getBlockX(), bossLoc.getBlockY(), bossLoc.getBlockZ())));
+            LivingEntity bossEntity = null;
+            World world = plugin.getBossManager().getCurrentBoss().getWorld();
+            for (LivingEntity entity : world.getLivingEntities()) {
+                if (entity == plugin.getBossManager().getCurrentBoss()) bossEntity = entity;
+            }
+
+            if (bossEntity == null) {
+                player.sendMessage(ColorUtils.colorMessage("&6No boss in the world!"));
+                return;
+            }
+            player.sendMessage(ColorUtils.colorMessage(String.format("%s &6has been spotted in World:&d %s &6at coords:&d %d, %d, %d", bossEntity.getCustomName(), bossEntity.getWorld().getName(), bossEntity.getLocation().getBlockX(), bossEntity.getLocation().getBlockY(), bossEntity.getLocation().getBlockZ())));
         }
     }
 
     @Subcommand("mobs")
     @Description("Show the mobtiers and difficulty modifier")
     public void onMobs(Player player) {
-        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
-
-        player.sendMessage(ColorUtils.colorMessage("&eCurrent Personal Difficulty modifier: &d" + mmoPlayer.getPersonalDifficulty()));
         player.sendMessage(ColorUtils.colorMessage("&eMobs can now spawn at &d5 &edifferent tiers within the wild!"));
         player.sendMessage(ColorUtils.colorMessage("&fCommon Mobs: &eThese are your standard mobs."));
         player.sendMessage(ColorUtils.colorMessage("&2Uncommon Mobs: &a+50% &espeed, &a2x &edamage, &a2x &ehealth."));
@@ -56,6 +65,13 @@ public class MMOCommand extends BaseCommand {
         player.sendMessage(ColorUtils.colorMessage("&5Epic Mobs: &c-20% &espeed, &a6x &edamage, &a3x &ehealth."));
         player.sendMessage(ColorUtils.colorMessage("&6Legendary Mobs: &c-40% &espeed, &a8x &edamage, &a4x &ehealth."));
         player.sendMessage(ColorUtils.colorMessage("&eEach mob tier increases in drops, xp and skill xp!"));
+    }
+
+    @Subcommand("difficulty|diff")
+    @Description("Show your current personal difficulty multiplier.")
+    public void onDiff(Player player) {
+        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
+        player.sendMessage(ColorUtils.colorMessage("&eCurrent Personal Difficulty modifier: &d" + mmoPlayer.getPersonalDifficulty()));
     }
 
     @Subcommand("item")
@@ -71,7 +87,14 @@ public class MMOCommand extends BaseCommand {
     @CommandCompletion("@bosses")
     @Description("Admin only command for summoning bosses")
     public void onBoss(Player player, Bosses bosses) {
-        BossManager.spawnBoss(bosses, player.getLocation());
+        plugin.getBossManager().spawnBoss(bosses, player.getLocation());
+    }
+
+    @Subcommand("killboss")
+    @CommandPermission("rammmo.boss")
+    @Description("Admin only command for killing bosses")
+    public void onBossKill(Player player) {
+        plugin.getBossManager().getCurrentBoss().damage(99999);
     }
 
     @Subcommand("version|v")

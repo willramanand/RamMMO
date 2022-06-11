@@ -32,7 +32,7 @@ public class EnderPriest extends BaseBoss {
         entity.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(25);
         entity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(1);
         entity.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(10);
-        entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(75);
+        entity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(125);
 
         entity.setRemoveWhenFarAway(false);
     }
@@ -48,13 +48,15 @@ public class EnderPriest extends BaseBoss {
 
     @Override
     public void setExtras(LivingEntity entity) {
-        entity.getLocation().getWorld().spawn(entity.getLocation(), Enderman.class, enderman -> {
-            enderman.setCustomName(ColorUtils.colorMessage("&bEnder Deacon"));
-            enderman.setCustomNameVisible(true);
-            enderman.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(10.0);
-            enderman.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(150);
-            enderman.setHealth(enderman.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-            enderman.setRemoveWhenFarAway(false);
-        });
+        for (int i = 0; i < 7; i++) {
+            entity.getLocation().getWorld().spawn(entity.getLocation(), Enderman.class, enderman -> {
+                enderman.setCustomName(ColorUtils.colorMessage("&bEnder Deacon"));
+                enderman.setCustomNameVisible(true);
+                enderman.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(10.0);
+                enderman.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(150);
+                enderman.setHealth(enderman.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+                enderman.setRemoveWhenFarAway(false);
+            });
+        }
     }
 }

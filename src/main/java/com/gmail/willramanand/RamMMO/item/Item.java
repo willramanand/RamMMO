@@ -10,6 +10,7 @@ public enum Item {
     APOCALYPSE_HORSE_EGG("Horse of the Apocalypse Egg", "apocalypseegg", "apocalypse_egg", 0),
     ENDER_GEM("Ender Gem", "endergem", "ender_gem", 1),
     ACTIVE_ENDER_GEM("Ender Gem", "activeendergem", "active_ender_gem", 0),
+    LEVIATHANS_HEART("Leviathan's Heart", "leviathansheart", "leviathans_heart", 0),
 
     ENCHANTED_NETHERSTAR("Enchanted Netherstar", "enchantednetherstar", "enchanted_netherstar", 1),
     ENCHANTED_GOLD("Enchanted Gold", "enchantedgold", "enchanted_gold", 1),
@@ -29,6 +30,7 @@ public enum Item {
     BUILDERS_WAND("Builder's Wand", "builderwand", "builder_wand", 0),
     POSEIDONS_TRIDENT("Poseidon's Trident", "poseidontrident", "poseidons_trident", 0),
     CHAACS_AXE("Chaac's Axe", "chaacaxe", "chaacs_axe", 1),
+    MYTHRIL_DRILL("Mythril Drill", "mythrildrill", "mythril_drill", 1),
 
     EMPOWERED_ELYTRA("Empowered Elytra", "empoweredelytra", "empowered_elytra", 0),
 

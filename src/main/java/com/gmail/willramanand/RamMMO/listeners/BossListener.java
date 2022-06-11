@@ -49,24 +49,24 @@ public class BossListener implements Listener {
     public void updateBossBar(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof LivingEntity)) return;
         if (!(BossUtils.isBoss((LivingEntity) event.getEntity()))) return;
-        if (BossManager.bossBar() == null) return;
+        if (plugin.getBossManager().bossBar() == null) return;
 
         double maxHealth = ((LivingEntity) event.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         double currentHealth = ((LivingEntity) event.getEntity()).getHealth();
         double progress = currentHealth / maxHealth;
-        BossManager.bossBar().setProgress(progress);
+        plugin.getBossManager().bossBar().setProgress(progress);
     }
 
     @EventHandler
     public void updateBossBarRegen(EntityRegainHealthEvent event) {
         if (!(event.getEntity() instanceof LivingEntity)) return;
         if (!(BossUtils.isBoss((LivingEntity) event.getEntity()))) return;
-        if (BossManager.bossBar() == null) return;
+        if (plugin.getBossManager().bossBar() == null) return;
 
         double maxHealth = ((LivingEntity) event.getEntity()).getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         double currentHealth = ((LivingEntity) event.getEntity()).getHealth();
         double progress = currentHealth / maxHealth;
-        BossManager.bossBar().setProgress(progress);
+        plugin.getBossManager().bossBar().setProgress(progress);
     }
 
 
@@ -96,16 +96,46 @@ public class BossListener implements Listener {
     }
 
     @EventHandler
+    public void onDamageColossus(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity)) return;
+        if (!(BossUtils.isBoss((LivingEntity) event.getEntity()))) return;
+        Bosses type = Bosses.matchBoss(DataUtils.get(event.getEntity(), "boss_type", PersistentDataType.STRING));
+
+        if (type != Bosses.THE_COLOSSUS) return;
+        Random rand = new Random();
+        if (rand.nextInt(101) >= 90) {
+            event.getEntity().getWorld().spawn(event.getEntity().getLocation(), Zombie.class, zombie -> {
+                zombie.setCustomName(ColorUtils.colorMessage("&bSea Serpent"));
+                zombie.setCustomNameVisible(true);
+                zombie.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(10.0);
+                zombie.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(150);
+                zombie.setHealth(zombie.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+                zombie.setRemoveWhenFarAway(false);
+            });
+        }
+    }
+
+    @EventHandler
+    public void leviathanDamageIncrease(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof LivingEntity)) return;
+        if (!(BossUtils.isBoss((LivingEntity) event.getDamager()))) return;
+        Bosses type = Bosses.matchBoss(DataUtils.get(event.getDamager(), "boss_type", PersistentDataType.STRING));
+
+        if (type != Bosses.THE_LEVIATHAN) return;
+        event.setDamage((event.getFinalDamage() * 5) + 10);
+    }
+
+    @EventHandler
     public void onBossDeath(EntityDeathEvent event) {
         if (!(BossUtils.isBoss(event.getEntity()))) return;
         LivingEntity boss = event.getEntity();
-        Collection<Entity> nearbyPlayers = boss.getLocation().getNearbyEntities(20, 20, 20);
+        Collection<Entity> nearbyPlayers = boss.getLocation().getNearbyEntities(30, 30, 30);
         Bukkit.broadcast(Component.text(ColorUtils.colorMessage(boss.getCustomName() + " &6has been slain!")));
-        BossManager.setActive(false);
+        plugin.getBossManager().clearBossInfo();
 
-        if (BossManager.bossBar() != null) {
-            BossManager.bossBar().removeAll();
-            BossManager.bossBar(null);
+        if (plugin.getBossManager().bossBar() != null) {
+            plugin.getBossManager().bossBar().removeAll();
+            plugin.getBossManager().bossBar(null);
         }
         for (Entity entity : nearbyPlayers) {
             if (entity instanceof Player) {
@@ -144,6 +174,14 @@ public class BossListener implements Listener {
     }
 
     @EventHandler
+    public void preventTeleportBoss(EntityTeleportEvent event) {
+        if (!(event.getEntity() instanceof LivingEntity)) return;
+        if (!(BossUtils.isBoss((LivingEntity) event.getEntity()))) return;
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
     public void increaseProjectile(ProjectileLaunchEvent event) {
         if (!(event.getEntity() instanceof AbstractArrow)) return;
         if (!(event.getEntity().getShooter() instanceof LivingEntity)) return;
@@ -154,6 +192,7 @@ public class BossListener implements Listener {
         double damage = (arrow.getDamage() * 5) + 40;
         arrow.setDamage(damage);
     }
+
 
 
     private boolean isFireEffect(EntityDamageEvent.DamageCause cause) {

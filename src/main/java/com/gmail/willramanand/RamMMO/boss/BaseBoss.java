@@ -43,6 +43,7 @@ public abstract class BaseBoss {
     public void setDisplayName(LivingEntity entity) {
         entity.setCustomName(ColorUtils.colorMessage(displayName));
         entity.setCustomNameVisible(true);
+        entity.setGlowing(true);
     }
 
     public abstract void setAttributes(LivingEntity entity);

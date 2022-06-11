@@ -1,5 +1,7 @@
 package com.gmail.willramanand.RamMMO.listeners;
 
+import com.destroystokyo.paper.MaterialSetTag;
+import com.destroystokyo.paper.MaterialTags;
 import com.gmail.willramanand.RamMMO.RamMMO;
 import com.gmail.willramanand.RamMMO.item.Item;
 import com.gmail.willramanand.RamMMO.item.ItemManager;
@@ -91,7 +93,7 @@ public class EntityListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(EntityDeathEvent event) {
-        Entity entity = event.getEntity();
+        LivingEntity entity = event.getEntity();
         int xp = event.getDroppedExp();
         List<ItemStack> droppedItems = event.getDrops();
 
@@ -152,8 +154,8 @@ public class EntityListener implements Listener {
             RamSkillsAPI.addXp(player, skill, xpMult * skillLeveler.getXp(player, source));
             event.setDroppedExp((int) xpMult * xp);
             for (ItemStack item : droppedItems) {
+                if ((entity.getEquipment().getItemInMainHand() != null && entity.getEquipment().getItemInMainHand().equals(item)) || MaterialTags.ENCHANTABLE.isTagged(item)) continue;
                 for (int i = 0; i < dropMult; i++) {
-                    if (!(EnchantmentTarget.ARMOR.includes(item)) && !(EnchantmentTarget.TOOL.includes(item)) && !(EnchantmentTarget.BOW.includes(item)) && !(EnchantmentTarget.WEAPON.includes(item)))
                         event.getEntity().getWorld().dropItem(entity.getLocation(), item);
                 }
             }
@@ -165,8 +167,8 @@ public class EntityListener implements Listener {
             }
             if (mmoPlayer.getPersonalDifficulty() > 0) {
                 for (ItemStack item : droppedItems) {
+                    if ((entity.getEquipment().getItemInMainHand() != null && entity.getEquipment().getItemInMainHand().equals(item)) || MaterialTags.ENCHANTABLE.isTagged(item)) continue;
                     for (int i = 0; i < modifier; i++) {
-                        if (!(EnchantmentTarget.ARMOR.includes(item)) && !(EnchantmentTarget.TOOL.includes(item)) && !(EnchantmentTarget.BOW.includes(item)) && !(EnchantmentTarget.WEAPON.includes(item)))
                             event.getEntity().getWorld().dropItem(entity.getLocation(), item);
                     }
                 }
@@ -204,21 +206,24 @@ public class EntityListener implements Listener {
 
         if (event.getEntity().getKiller() == null) return;
 
-        Player killer = (Player) event.getEntity().getKiller();
-        MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(killer);
+        event.getEntity().getNearbyEntities(50, 50, 50).forEach(entity -> {
+            if (!(entity instanceof Player)) return;
+            Player player = (Player) entity;
+            MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(player);
 
-        int newDifficulty = mmoPlayer.getPersonalDifficulty() + 1;
-        if (newDifficulty <= 5) {
-            mmoPlayer.setPersonalDifficulty(newDifficulty);
-            killer.sendMessage(ColorUtils.colorMessage("&6The world grows harder to match your might!"));
-        }
+            int newDifficulty = mmoPlayer.getPersonalDifficulty() + 1;
+            if (newDifficulty <= 5) {
+                mmoPlayer.setPersonalDifficulty(newDifficulty);
+                player.sendMessage(ColorUtils.colorMessage("&6The world grows harder to match your might!"));
+            }
 
-        int rng = new Random().nextInt(101);
-        int upperBound = 80 - (2 * mmoPlayer.getPersonalDifficulty());
-        if (rng >= upperBound) {
-            event.getEntity().getKiller().sendMessage(ColorUtils.colorMessage("&eYou have received a &4Fiery Scale&e!"));
-            event.getEntity().getKiller().getInventory().addItem(ItemManager.getItem(Item.FIERY_SCALE));
-        }
+            int rng = new Random().nextInt(101);
+            int upperBound = 80 - (2 * mmoPlayer.getPersonalDifficulty());
+            if (rng >= upperBound) {
+                event.getEntity().getKiller().sendMessage(ColorUtils.colorMessage("&eYou have received a &4Fiery Scale&e!"));
+                event.getEntity().getKiller().getInventory().addItem(ItemManager.getItem(Item.FIERY_SCALE));
+            }
+        });
     }
 
     @EventHandler
@@ -227,7 +232,7 @@ public class EntityListener implements Listener {
 
         if (event.getEntity().getKiller() == null) return;
 
-        Player killer = (Player) event.getEntity().getKiller();
+        Player killer = event.getEntity().getKiller();
         MMOPlayer mmoPlayer = plugin.getPlayerManager().getPlayerData(killer);
 
         int rng = new Random().nextInt(101);
